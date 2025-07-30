@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MigrationService.Tool": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36221.1 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService.Tool", "MigrationService.Tool\MigrationService.Tool.csproj", "{53D8A7C7-B63D-4D79-BBB5-B89F702B688B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MigrationService.Infrastructure", "MigrationService.Infrastructure\MigrationService.Infrastructure.csproj", "{00624814-F5CF-45E6-9737-8077EEF3F3B7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{53D8A7C7-B63D-4D79-BBB5-B89F702B688B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53D8A7C7-B63D-4D79-BBB5-B89F702B688B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53D8A7C7-B63D-4D79-BBB5-B89F702B688B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53D8A7C7-B63D-4D79-BBB5-B89F702B688B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00624814-F5CF-45E6-9737-8077EEF3F3B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00624814-F5CF-45E6-9737-8077EEF3F3B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00624814-F5CF-45E6-9737-8077EEF3F3B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00624814-F5CF-45E6-9737-8077EEF3F3B7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {87A65E67-F274-4E49-9FA9-D54A14F94E01}
+	EndGlobalSection
+EndGlobal
