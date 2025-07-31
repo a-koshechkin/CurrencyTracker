@@ -20,4 +20,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.22.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CurrencyTracker.Shared.Infrastructure" Version="1.0.0" />
+  </ItemGroup>
+
 </Project>

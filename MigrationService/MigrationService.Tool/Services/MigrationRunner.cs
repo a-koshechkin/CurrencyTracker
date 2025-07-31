@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Retry;
+using Shared.Infrastructure.Services;
 
 namespace MigrationService.Tool.Services;
 

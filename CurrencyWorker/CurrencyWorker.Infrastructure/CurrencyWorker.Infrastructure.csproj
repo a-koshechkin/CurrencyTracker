@@ -7,7 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CurrencyWorker.Application\CurrencyWorker.Application.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CurrencyTracker.Shared.Domain" Version="1.0.0" />
     <ProjectReference Include="..\CurrencyWorker.Domain\CurrencyWorker.Domain.csproj" />
   </ItemGroup>
 

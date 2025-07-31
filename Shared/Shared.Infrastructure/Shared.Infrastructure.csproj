@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    
+    <!-- NuGet Package Configuration -->
+    <PackageId>CurrencyTracker.Shared.Infrastructure</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>CurrencyTracker Team</Authors>
+    <Company>CurrencyTracker</Company>
+    <Description>Shared infrastructure services and utilities for CurrencyTracker microservices</Description>
+    <PackageTags>currency;infrastructure;services;shared</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageOutputPath>..\..\nuget-packages</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="Polly" Version="8.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CurrencyTracker.Shared.Domain" Version="1.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+</Project> 

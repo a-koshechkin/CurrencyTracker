@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  # Migration Service (Production)
+  migrationservice:
+    build:
+      context: .
+      dockerfile: MigrationService/MigrationService.Tool/Dockerfile
+    command: ["--migrate"]
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=${DATABASE_CONNECTION_STRING}
+    restart: "no"
+
+  # Currency Worker (Production)
+  currencyworker:
+    build:
+      context: .
+      dockerfile: CurrencyWorker/CurrencyWorker.Worker/Dockerfile
+    depends_on:
+      migrationservice:
+        condition: service_completed_successfully
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=${DATABASE_CONNECTION_STRING}
+      - CurrencyUpdate__IntervalMinutes=${CURRENCY_UPDATE_INTERVAL:-60}
+    restart: unless-stopped 

@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database (Development)
+  postgresql:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: currencytracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d currencytracker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+  # Migration Service
+  migrationservice:
+    build:
+      context: .
+      dockerfile: MigrationService/MigrationService.Tool/Dockerfile
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    command: ["--migrate"]
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+    networks:
+      - backend
+    restart: "no"
+
+  # Currency Worker
+  currencyworker:
+    build:
+      context: .
+      dockerfile: CurrencyWorker/CurrencyWorker.Worker/Dockerfile
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      migrationservice:
+        condition: service_completed_successfully
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+      - CurrencyUpdate__IntervalMinutes=60
+    networks:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+    driver: bridge 

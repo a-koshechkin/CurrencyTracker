@@ -1,10 +1,10 @@
-using Npgsql;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Polly;
+using Npgsql;
 using Polly.Retry;
 
-namespace MigrationService.Tool.Services;
+namespace Shared.Infrastructure.Services;
 
 public class DatabaseHealthService
 {
@@ -13,14 +13,34 @@ public class DatabaseHealthService
     private readonly AsyncRetryPolicy _retryPolicy;
 
     public DatabaseHealthService(
+        IConfiguration configuration,
+        ILogger<DatabaseHealthService> logger)
+    {
+        _connectionString = configuration.GetConnectionString("DefaultConnection") 
+            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured");
+        _logger = logger;
+        
+        var retryConfig = new RetryConfiguration();
+        _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(retryConfig, logger, "Database connection");
+    }
+
+    public DatabaseHealthService(
         string connectionString, 
         ILogger<DatabaseHealthService> logger,
-        IOptions<PollyConfiguration> pollyConfig)
+        IOptions<PollyConfiguration>? pollyConfig = null)
     {
         _connectionString = connectionString;
         _logger = logger;
         
-        _retryPolicy = RetryPolicyFactory.CreateDatabaseRetryPolicy(pollyConfig, logger);
+        if (pollyConfig != null)
+        {
+            _retryPolicy = RetryPolicyFactory.CreateDatabaseRetryPolicy(pollyConfig, logger);
+        }
+        else
+        {
+            var retryConfig = new RetryConfiguration();
+            _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(retryConfig, logger, "Database connection");
+        }
     }
 
     public async Task<bool> WaitForDatabaseAsync(CancellationToken cancellationToken = default)

@@ -9,43 +9,43 @@ public class SeedInitialData : Migration
     {
         Insert.IntoTable("currency").Row(new
         {
-            name = "US Dollar",
+            name = "USD",
             rate = 81.83m
         });
 
         Insert.IntoTable("currency").Row(new
         {
-            name = "Euro",
+            name = "EUR",
             rate = 94.95m
         });
 
         Insert.IntoTable("currency").Row(new
         {
-            name = "British Pound",
+            name = "GBP",
             rate = 109.07m
         });
 
         Insert.IntoTable("currency").Row(new
         {
-            name = "Japanese Yen",
+            name = "JPY",
             rate = 0.55m
         });
 
         Insert.IntoTable("currency").Row(new
         {
-            name = "Canadian Dollar",
+            name = "CAD",
             rate = 59.42m
         });
 
         Insert.IntoTable("currency").Row(new
         {
-            name = "Swiss Franc",
+            name = "CHF",
             rate = 101.75m
         });
 
         Insert.IntoTable("currency").Row(new
         {
-            name = "Australian Dollar",
+            name = "AUD",
             rate = 53.28m
         });
     }

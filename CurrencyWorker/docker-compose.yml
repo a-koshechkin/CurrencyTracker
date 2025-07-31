@@ -1,0 +1,38 @@
+services:
+  currencyworker:
+    build:
+      context: .
+      dockerfile: CurrencyWorker.Worker/Dockerfile
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+    networks:
+      - backend
+    restart: unless-stopped
+
+  postgresql:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: currencytracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d currencytracker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
+volumes:
+  postgres_data:
+
+networks:
+  backend: 

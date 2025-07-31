@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MigrationService.Tool.Services;
+using Shared.Infrastructure.Services;
 
 namespace MigrationService.Tool.Configuration;
 
