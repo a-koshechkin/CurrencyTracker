@@ -4,26 +4,10 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    
-    <!-- NuGet Package Configuration -->
-    <PackageId>CurrencyTracker.Shared.Domain</PackageId>
-    <Version>1.0.0</Version>
-    <Authors>CurrencyTracker Team</Authors>
-    <Company>CurrencyTracker</Company>
-    <Description>Shared domain entities and interfaces for CurrencyTracker microservices</Description>
-    <PackageTags>currency;domain;entities;shared</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageOutputPath>..\..\nuget-packages</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="README.md" Pack="true" PackagePath="/" />
   </ItemGroup>
 
 </Project> 

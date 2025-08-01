@@ -11,17 +11,17 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 
-# Copy NuGet packages first
-COPY ["nuget-packages/", "nuget-packages/"]
-
 # Copy CurrencyWorker projects
 COPY ["CurrencyWorker/CurrencyWorker.Worker/CurrencyWorker.Worker.csproj", "CurrencyWorker/CurrencyWorker.Worker/"]
 COPY ["CurrencyWorker/CurrencyWorker.Application/CurrencyWorker.Application.csproj", "CurrencyWorker/CurrencyWorker.Application/"]
 COPY ["CurrencyWorker/CurrencyWorker.Domain/CurrencyWorker.Domain.csproj", "CurrencyWorker/CurrencyWorker.Domain/"]
 COPY ["CurrencyWorker/CurrencyWorker.Infrastructure/CurrencyWorker.Infrastructure.csproj", "CurrencyWorker/CurrencyWorker.Infrastructure/"]
 
-# Add local NuGet source and restore dependencies
-RUN dotnet nuget add source "/src/nuget-packages" --name LocalPackages
+# Copy Shared projects
+COPY ["Shared/Shared.Domain/Shared.Domain.csproj", "Shared/Shared.Domain/"]
+COPY ["Shared/Shared.Identity/Shared.Identity.csproj", "Shared/Shared.Identity/"]
+
+# Restore dependencies
 RUN dotnet restore "CurrencyWorker/CurrencyWorker.Worker/CurrencyWorker.Worker.csproj"
 
 # Copy all source code

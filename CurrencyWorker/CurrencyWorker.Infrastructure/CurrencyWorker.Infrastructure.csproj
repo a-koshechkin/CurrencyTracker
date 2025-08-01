@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CurrencyTracker.Shared.Domain" Version="1.0.0" />
+    <ProjectReference Include="..\..\Shared\Shared.Domain\Shared.Domain.csproj" />
     <ProjectReference Include="..\CurrencyWorker.Domain\CurrencyWorker.Domain.csproj" />
   </ItemGroup>
 

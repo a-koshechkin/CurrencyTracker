@@ -4,9 +4,7 @@ WORKDIR /app
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["nuget-packages/", "nuget-packages/"]
 COPY ["MigrationService/MigrationService.Tool/MigrationService.Tool.csproj", "MigrationService/MigrationService.Tool/"]
-RUN dotnet nuget add source "/src/nuget-packages" --name LocalPackages
 RUN dotnet restore "./MigrationService/MigrationService.Tool/MigrationService.Tool.csproj"
 COPY . .
 WORKDIR "/src/MigrationService/MigrationService.Tool"

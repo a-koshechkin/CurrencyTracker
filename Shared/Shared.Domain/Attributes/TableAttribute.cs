@@ -1,14 +1,9 @@
 namespace Shared.Domain.Attributes;
 
 [AttributeUsage(AttributeTargets.Class)]
-public class TableAttribute : Attribute
+public class TableAttribute(string tableName) : Attribute
 {
-    public string TableName { get; }
-    
-    public TableAttribute(string tableName)
-    {
-        TableName = tableName;
-    }
+    public string TableName { get; } = tableName;
 }
 
 [AttributeUsage(AttributeTargets.Property)]
