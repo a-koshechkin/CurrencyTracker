@@ -1,6 +1,17 @@
-@FinanceService.API_HostAddress = http://localhost:5230
+### Get User Favorites
+GET http://localhost:5002/api/finance/favorites/1
+Accept: application/json
 
-GET {{FinanceService.API_HostAddress}}/weatherforecast/
+###
+
+### Get User Favorites - Invalid User ID
+GET http://localhost:5002/api/finance/favorites/0
+Accept: application/json
+
+###
+
+### Get User Favorites - Non-existent User
+GET http://localhost:5002/api/finance/favorites/999
 Accept: application/json
 
 ###

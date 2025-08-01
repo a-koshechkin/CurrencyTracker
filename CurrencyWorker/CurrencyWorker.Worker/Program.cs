@@ -3,10 +3,14 @@ using CurrencyWorker.Domain.Interfaces;
 using CurrencyWorker.Infrastructure.Repositories;
 using CurrencyWorker.Infrastructure.Services;
 using CurrencyWorker.Worker;
+using Shared.Infrastructure.Services;
 
 var host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
+        // Configure Polly retry policies
+        services.Configure<PollyConfiguration>(context.Configuration.GetSection("Polly"));
+        
         // Register domain interfaces as singletons since they're used by hosted service
         services.AddSingleton<ICurrencyRepository, CurrencyRepository>();
         services.AddSingleton<ICurrencyApiService, RussianCentralBankApiService>();

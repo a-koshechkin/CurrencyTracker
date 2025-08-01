@@ -7,13 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\UserService.Domain\UserService.Domain.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Domain\Shared.Domain.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.DTOs\Shared.DTOs.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Identity\Shared.Identity.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\UserService.Domain\UserService.Domain.csproj" />
   </ItemGroup>
 
 </Project>

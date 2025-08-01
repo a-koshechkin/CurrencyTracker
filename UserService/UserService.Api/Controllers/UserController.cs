@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs.DTOs;
+using Shared.Infrastructure.Controllers;
 using UserService.Domain.Services;
 
 namespace UserService.Api.Controllers;
 
-[ApiController]
-[Route("api/[controller]")]
-public class UserController(IUserService userService) : ControllerBase
+public class UserController(IUserService userService) : BaseApiController
 {
     private readonly IUserService _userService = userService;
 
@@ -16,9 +15,9 @@ public class UserController(IUserService userService) : ControllerBase
         var result = await _userService.RegisterAsync(request);
         
         if (!result.Success)
-            return BadRequest(result);
+            return BadRequest<UserLoginResponse>(result.Message, result.Errors);
             
-        return Ok(result);
+        return Success(result.Data, "User registered successfully");
     }
 
     [HttpPost("login")]
@@ -27,9 +26,9 @@ public class UserController(IUserService userService) : ControllerBase
         var result = await _userService.LoginAsync(request);
         
         if (!result.Success)
-            return Unauthorized(result);
+            return UnauthorizedResponse<UserLoginResponse>(result.Message);
             
-        return Ok(result);
+        return Success(result.Data, "User logged in successfully");
     }
 
     [HttpPost("logout")]
@@ -40,11 +39,11 @@ public class UserController(IUserService userService) : ControllerBase
         if (!result.Success)
         {
             if (result.Message.Contains("Invalid session token"))
-                return Unauthorized(result);
+                return UnauthorizedResponse<bool>(result.Message);
             else
-                return BadRequest(result);
+                return BadRequest<bool>(result.Message, result.Errors);
         }
             
-        return Ok(result);
+        return Success(result.Data, "User logged out successfully");
     }
 } 

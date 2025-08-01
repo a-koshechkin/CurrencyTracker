@@ -1,22 +1,45 @@
 using CurrencyWorker.Domain.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Npgsql;
+using Polly.Retry;
 using Shared.Domain.Entities;
+using Shared.Infrastructure.Services;
 
 namespace CurrencyWorker.Infrastructure.Repositories;
 
-public class CurrencyRepository(
-    IConfiguration configuration,
-    ILogger<CurrencyRepository> logger) : ICurrencyRepository
+public class CurrencyRepository : ICurrencyRepository
 {
-    private readonly string _connectionString = configuration.GetConnectionString("DefaultConnection")
-            ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured");
-    private readonly ILogger<CurrencyRepository> _logger = logger;
+    private readonly string _connectionString;
+    private readonly ILogger<CurrencyRepository> _logger;
+    private readonly AsyncRetryPolicy _retryPolicy;
+
+    public CurrencyRepository(
+        IConfiguration configuration,
+        ILogger<CurrencyRepository> logger,
+        IOptions<PollyConfiguration>? pollyConfig = null)
+    {
+        _connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured");
+        _logger = logger;
+        
+        if (pollyConfig != null)
+        {
+            _retryPolicy = RetryPolicyFactory.CreateDatabaseRetryPolicy(pollyConfig, logger);
+        }
+        else
+        {
+            _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
+                new RetryConfiguration { MaxRetries = 3, BaseDelaySeconds = 2 }, 
+                logger, 
+                "Database operation");
+        }
+    }
 
     public async Task UpdateCurrencyRatesAsync(IEnumerable<CurrencyRate> rates, CancellationToken cancellationToken = default)
     {
-        try
+        await _retryPolicy.ExecuteAsync(async () =>
         {
             using var connection = new NpgsqlConnection(_connectionString);
             await connection.OpenAsync(cancellationToken);
@@ -50,12 +73,7 @@ public class CurrencyRepository(
 
             _logger.LogInformation("Currency rates update completed: {UpdatedCount} updated, {InsertedCount} inserted", 
                 updatedCount, insertedCount);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to update currency rates in database");
-            throw;
-        }
+        });
     }
 
     private async Task<int> UpdateExistingCurrencyAsync(NpgsqlConnection connection, CurrencyRate rate, CancellationToken cancellationToken)

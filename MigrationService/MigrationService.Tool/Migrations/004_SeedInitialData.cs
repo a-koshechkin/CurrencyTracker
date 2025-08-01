@@ -48,10 +48,60 @@ public class SeedInitialData : Migration
             name = "AUD",
             rate = 53.28m
         });
+
+        Insert.IntoTable("user").Row(new
+        {
+            name = "john_doe",
+            password = "hashed_password_123"
+        });
+
+        Insert.IntoTable("user").Row(new
+        {
+            name = "jane_smith",
+            password = "hashed_password_456"
+        });
+
+        Insert.IntoTable("user_favourites").Row(new
+        {
+            user_id = 1,
+            currency_id = 1
+        });
+
+        Insert.IntoTable("user_favourites").Row(new
+        {
+            user_id = 1,
+            currency_id = 2
+        });
+
+        Insert.IntoTable("user_favourites").Row(new
+        {
+            user_id = 1,
+            currency_id = 3
+        });
+
+        Insert.IntoTable("user_favourites").Row(new
+        {
+            user_id = 2,
+            currency_id = 2
+        });
+
+        Insert.IntoTable("user_favourites").Row(new
+        {
+            user_id = 2,
+            currency_id = 4
+        });
+
+        Insert.IntoTable("user_favourites").Row(new
+        {
+            user_id = 2,
+            currency_id = 5
+        });
     }
 
     public override void Down()
     {
+        Delete.FromTable("user_favourites").AllRows();
+        Delete.FromTable("user").AllRows();
         Delete.FromTable("currency").AllRows();
     }
 } 

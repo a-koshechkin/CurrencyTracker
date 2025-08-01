@@ -5,9 +5,6 @@ namespace Shared.Domain.Entities;
 [Table("user_favorites")]
 public class UserFavorite
 {
-    [Column("id")]
-    public int Id { get; set; }
-    
     [Column("user_id")]
     public int UserId { get; set; }
     

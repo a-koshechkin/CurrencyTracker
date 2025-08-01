@@ -1,18 +1,44 @@
 using CurrencyWorker.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Polly.Retry;
 using Shared.Domain.Entities;
+using Shared.Infrastructure.Services;
 using System.Xml.Linq;
 using System.Text;
 
 namespace CurrencyWorker.Infrastructure.Services;
 
-public class RussianCentralBankApiService(
-    HttpClient httpClient,
-    ILogger<RussianCentralBankApiService> logger) : ICurrencyApiService
+public class RussianCentralBankApiService : ICurrencyApiService
 {
-    private readonly HttpClient _httpClient = httpClient;
-    private readonly ILogger<RussianCentralBankApiService> _logger = logger;
+    private readonly HttpClient _httpClient;
+    private readonly ILogger<RussianCentralBankApiService> _logger;
+    private readonly AsyncRetryPolicy _retryPolicy;
     private const string ApiUrl = "http://www.cbr.ru/scripts/XML_daily.asp";
+
+    public RussianCentralBankApiService(
+        HttpClient httpClient,
+        ILogger<RussianCentralBankApiService> logger,
+        IOptions<PollyConfiguration>? pollyConfig = null)
+    {
+        _httpClient = httpClient;
+        _logger = logger;
+        
+        if (pollyConfig != null)
+        {
+            _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
+                new RetryConfiguration { MaxRetries = 3, BaseDelaySeconds = 2 }, 
+                logger, 
+                "API call");
+        }
+        else
+        {
+            _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
+                new RetryConfiguration { MaxRetries = 3, BaseDelaySeconds = 2 }, 
+                logger, 
+                "API call");
+        }
+    }
 
     static RussianCentralBankApiService()
     {
@@ -22,7 +48,7 @@ public class RussianCentralBankApiService(
 
     public async Task<IEnumerable<CurrencyRate>> GetCurrentRatesAsync(CancellationToken cancellationToken = default)
     {
-        try
+        return await _retryPolicy.ExecuteAsync(async () =>
         {
             _logger.LogInformation("Fetching currency rates from Russian Central Bank API...");
 
@@ -48,12 +74,7 @@ public class RussianCentralBankApiService(
 
             _logger.LogInformation("Successfully fetched {Count} currency rates from Russian Central Bank", rates.Count);
             return rates;
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to fetch currency rates from Russian Central Bank API");
-            return [];
-        }
+        });
     }
 
     private static decimal ParseRate(string? value, string? nominal)

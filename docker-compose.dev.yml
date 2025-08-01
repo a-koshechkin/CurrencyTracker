@@ -72,6 +72,26 @@ services:
       - backend
     restart: unless-stopped
 
+  # Finance Service API
+  financeservice:
+    build:
+      context: .
+      dockerfile: FinanceService/FinanceService.API/Dockerfile
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      migrationservice:
+        condition: service_completed_successfully
+    ports:
+      - "7003:8080"
+      - "7004:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+    networks:
+      - backend
+    restart: unless-stopped
+
 volumes:
   postgres_data:
 
