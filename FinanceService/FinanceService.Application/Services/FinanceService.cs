@@ -42,4 +42,53 @@ public class FinanceService(IUserRepository userRepository, IUserFavoriteReposit
             FavoriteCurrencies = favoriteCurrencies
         };
     }
+
+    public async Task<List<CurrencyResponse>> GetAllCurrenciesAsync()
+    {
+        var currencies = await _currencyRepository.GetAllCurrenciesAsync();
+        
+        return [.. currencies.Select(c => new CurrencyResponse
+        {
+            Name = c.Name,
+            Rate = c.Rate
+        })];
+    }
+
+    public async Task<bool> AddToFavoritesAsync(int userId, string currencyCode)
+    {
+        var userExists = await _userRepository.UserExistsAsync(userId);
+        if (!userExists)
+        {
+            throw new ArgumentException($"User with ID {userId} not found");
+        }
+
+        var currency = await _currencyRepository.GetCurrencyByNameAsync(currencyCode) ?? throw new ArgumentException($"Currency with code {currencyCode} not found");
+        var existingFavorite = await _userFavoriteRepository.GetUserFavoriteAsync(userId, currency.Id);
+        if (existingFavorite != null)
+        {
+            return false;
+        }
+
+        await _userFavoriteRepository.AddUserFavoriteAsync(userId, currency.Id);
+        return true;
+    }
+
+    public async Task<bool> RemoveFromFavoritesAsync(int userId, string currencyCode)
+    {
+        var userExists = await _userRepository.UserExistsAsync(userId);
+        if (!userExists)
+        {
+            throw new ArgumentException($"User with ID {userId} not found");
+        }
+
+        var currency = await _currencyRepository.GetCurrencyByNameAsync(currencyCode) ?? throw new ArgumentException($"Currency with code {currencyCode} not found");
+        var existingFavorite = await _userFavoriteRepository.GetUserFavoriteAsync(userId, currency.Id);
+        if (existingFavorite == null)
+        {
+            return false;
+        }
+
+        await _userFavoriteRepository.RemoveUserFavoriteAsync(userId, currency.Id);
+        return true;
+    }
 } 

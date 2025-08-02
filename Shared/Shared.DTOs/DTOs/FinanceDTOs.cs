@@ -9,4 +9,15 @@ public record FavoriteCurrencyInfo
 {
     public string CurrencyName { get; init; } = string.Empty;
     public decimal Rate { get; init; }
+}
+
+public record CurrencyResponse
+{
+    public string Name { get; init; } = string.Empty;
+    public decimal Rate { get; init; }
+}
+
+public record AddFavoriteRequest
+{
+    public string CurrencyCode { get; init; } = string.Empty;
 } 

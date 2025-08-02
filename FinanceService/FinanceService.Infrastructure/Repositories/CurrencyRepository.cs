@@ -14,4 +14,17 @@ public class CurrencyRepository(FinanceDbContext context) : ICurrencyRepository
             .Where(c => currencyIds.Contains(c.Id))
             .ToListAsync();
     }
+
+    public async Task<List<Currency>> GetAllCurrenciesAsync()
+    {
+        return await _context.Currencies
+            .OrderBy(c => c.Name)
+            .ToListAsync();
+    }
+
+    public async Task<Currency?> GetCurrencyByNameAsync(string name)
+    {
+        return await _context.Currencies
+            .FirstOrDefaultAsync(c => c.Name == name);
+    }
 } 

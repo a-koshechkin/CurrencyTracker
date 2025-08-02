@@ -3,8 +3,8 @@ version: '3.8'
 services:
   finance-service:
     build:
-      context: .
-      dockerfile: FinanceService.API/Dockerfile
+      context: ..
+      dockerfile: FinanceService/FinanceService.API/Dockerfile
     ports:
       - "5002:80"
     environment:
