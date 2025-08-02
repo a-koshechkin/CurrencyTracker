@@ -16,12 +16,14 @@ public record UserLoginResponse
 {
     public int UserId { get; init; }
     public string Name { get; init; } = string.Empty;
-    public string SessionToken { get; init; } = string.Empty;
+    public string AccessToken { get; init; } = string.Empty;
+    public string TokenType { get; init; } = "Bearer";
+    public int ExpiresIn { get; init; } = 3600; // 1 hour in seconds
 }
 
 public record UserLogoutRequest
 {
-    public string SessionToken { get; init; } = string.Empty;
+    public string AccessToken { get; init; } = string.Empty;
 }
 
 public record ApiResponse<T>

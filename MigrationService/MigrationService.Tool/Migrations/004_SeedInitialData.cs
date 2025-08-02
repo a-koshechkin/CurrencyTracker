@@ -52,13 +52,13 @@ public class SeedInitialData : Migration
         Insert.IntoTable("user").Row(new
         {
             name = "john_doe",
-            password = "hashed_password_123"
+            password = "$2a$12$5qIf.dz9JhgK5y.52r6G7OeO41uHgwEki/FAVc8sqqOLmhmu7A8Ge"
         });
 
         Insert.IntoTable("user").Row(new
         {
             name = "jane_smith",
-            password = "hashed_password_456"
+            password = "$2a$12$zAOVU8lkmAO5e6uBm7rh0Oz3VKRItnBYjsXWrg0Df.0g/l1pMKiE2"
         });
 
         Insert.IntoTable("user_favourites").Row(new

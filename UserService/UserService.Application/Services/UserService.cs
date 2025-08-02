@@ -9,11 +9,11 @@ namespace UserService.Application.Services;
 public class UserService(
     IUserRepository userRepository,
     IPasswordHasher passwordHasher,
-    ISessionService sessionService) : IUserService
+    IJwtService jwtService) : IUserService
 {
     private readonly IUserRepository _userRepository = userRepository;
     private readonly IPasswordHasher _passwordHasher = passwordHasher;
-    private readonly ISessionService _sessionService = sessionService;
+    private readonly IJwtService _jwtService = jwtService;
 
     public async Task<ApiResponse<UserLoginResponse>> RegisterAsync(UserRegistrationRequest request)
     {
@@ -38,13 +38,15 @@ public class UserService(
             };
 
             var createdUser = await _userRepository.CreateAsync(user);
-            var sessionToken = _sessionService.CreateSession(createdUser.Id, createdUser.Name);
+            var accessToken = _jwtService.GenerateToken(createdUser.Id, createdUser.Name);
 
             return CreateSuccessResponse("User registered successfully", new UserLoginResponse
             {
                 UserId = createdUser.Id,
                 Name = createdUser.Name,
-                SessionToken = sessionToken
+                AccessToken = accessToken,
+                TokenType = "Bearer",
+                ExpiresIn = 3600
             });
         }
         catch (Exception ex)
@@ -68,19 +70,15 @@ public class UserService(
                 return CreateErrorResponse<UserLoginResponse>("Invalid credentials", ["Invalid username or password"]);
             }
 
-            if (_sessionService.HasActiveSession(user.Id))
-            {
-                return CreateErrorResponse<UserLoginResponse>("User already has an active session", 
-                    ["Please logout from your current session before logging in again"]);
-            }
-
-            var sessionToken = _sessionService.CreateSession(user.Id, user.Name);
+            var accessToken = _jwtService.GenerateToken(user.Id, user.Name);
 
             return CreateSuccessResponse("Login successful", new UserLoginResponse
             {
                 UserId = user.Id,
                 Name = user.Name,
-                SessionToken = sessionToken
+                AccessToken = accessToken,
+                TokenType = "Bearer",
+                ExpiresIn = 3600
             });
         }
         catch (Exception ex)
@@ -93,18 +91,10 @@ public class UserService(
     {
         try
         {
-            if (string.IsNullOrWhiteSpace(request.SessionToken))
+            if (string.IsNullOrWhiteSpace(request.AccessToken))
             {
-                return Task.FromResult(CreateErrorResponse<bool>("Session token is required", ["Session token cannot be empty"]));
+                return Task.FromResult(CreateErrorResponse<bool>("Access token is required", ["Access token cannot be empty"]));
             }
-
-            if (!_sessionService.ValidateSession(request.SessionToken))
-            {
-                return Task.FromResult(CreateErrorResponse<bool>("Invalid session token", 
-                    ["The provided session token is invalid or has expired"]));
-            }
-
-            _sessionService.InvalidateSession(request.SessionToken);
 
             return Task.FromResult(CreateSuccessResponse("Logout successful", true));
         }
