@@ -1,6 +1,6 @@
+using Shared.Domain.Entities;
 using Shared.DTOs.DTOs;
 using Shared.Identity.Services;
-using Shared.Domain.Entities;
 using UserService.Domain.Interfaces;
 using UserService.Domain.Services;
 
@@ -17,13 +17,24 @@ public class UserService(
 
     public async Task<ApiResponse<UserLoginResponse>> RegisterAsync(UserRegistrationRequest request)
     {
+        if (request?.Name == null || string.IsNullOrWhiteSpace(request.Name.Trim()) || 
+            request?.Password == null || string.IsNullOrWhiteSpace(request.Password.Trim()))
+        {
+            return CreateErrorResponse<UserLoginResponse>("Name and password are required", ["Name and password cannot be empty"]);
+        }
+
+        if (ContainsControlCharacters(request.Name))
+        {
+            return CreateErrorResponse<UserLoginResponse>("Name and password are required", ["Name contains invalid characters"]);
+        }
+
+        if (request.Name.Length > 100 || request.Password.Length > 255)
+        {
+            return CreateErrorResponse<UserLoginResponse>("Name and password are required", ["Name or password exceeds maximum length"]);
+        }
+
         try
         {
-            if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Password))
-            {
-                return CreateErrorResponse<UserLoginResponse>("Name and password are required", ["Name and password cannot be empty"]);
-            }
-
             var existingUser = await _userRepository.GetByNameAsync(request.Name);
             if (existingUser != null)
             {
@@ -57,13 +68,14 @@ public class UserService(
 
     public async Task<ApiResponse<UserLoginResponse>> LoginAsync(UserLoginRequest request)
     {
+        if (request?.Name == null || string.IsNullOrWhiteSpace(request.Name.Trim()) || 
+            request?.Password == null || string.IsNullOrWhiteSpace(request.Password.Trim()))
+        {
+            return CreateErrorResponse<UserLoginResponse>("Name and password are required", ["Name and password cannot be empty"]);
+        }
+
         try
         {
-            if (string.IsNullOrWhiteSpace(request.Name) || string.IsNullOrWhiteSpace(request.Password))
-            {
-                return CreateErrorResponse<UserLoginResponse>("Name and password are required", ["Name and password cannot be empty"]);
-            }
-
             var user = await _userRepository.GetByNameAsync(request.Name);
             if (user == null || !_passwordHasher.VerifyPassword(request.Password, user.Password))
             {
@@ -89,11 +101,17 @@ public class UserService(
 
     public Task<ApiResponse<bool>> LogoutAsync(UserLogoutRequest request)
     {
+        if (request?.AccessToken == null || string.IsNullOrWhiteSpace(request.AccessToken.Trim()))
+        {
+            return Task.FromResult(CreateErrorResponse<bool>("Access token is required", ["Access token cannot be empty"]));
+        }
+
         try
         {
-            if (string.IsNullOrWhiteSpace(request.AccessToken))
+            var tokenValidation = _jwtService.ValidateToken(request.AccessToken);
+            if (tokenValidation == null)
             {
-                return Task.FromResult(CreateErrorResponse<bool>("Access token is required", ["Access token cannot be empty"]));
+                return Task.FromResult(CreateErrorResponse<bool>("Invalid token", ["Token validation failed"]));
             }
 
             return Task.FromResult(CreateSuccessResponse("Logout successful", true));
@@ -102,6 +120,11 @@ public class UserService(
         {
             return Task.FromResult(CreateErrorResponse<bool>("Logout failed", [ex.Message]));
         }
+    }
+
+    private static bool ContainsControlCharacters(string input)
+    {
+        return input.Any(c => char.IsControl(c) && c != '\t' && c != '\n' && c != '\r' && c != '\f' && c != '\v');
     }
 
     private static ApiResponse<T> CreateSuccessResponse<T>(string message, T data)

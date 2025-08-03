@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.DTOs.DTOs;
 using System.Reflection;
 
 namespace FinanceService.API.Controllers;
@@ -14,9 +15,9 @@ public class HealthController(IConfiguration configuration) : ControllerBase
     [HttpGet]
     public IActionResult GetHealth()
     {
-        var healthStatus = new
+        var healthStatus = new HealthResponse
         {
-            Service = new
+            Service = new ServiceInfo
             {
                 Name = "Finance Service",
                 Status = "Healthy",

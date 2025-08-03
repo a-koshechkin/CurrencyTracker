@@ -4,7 +4,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add logging
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddDebug();
@@ -28,13 +27,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization(options =>
-{
-    options.AddPolicy("AuthenticatedUser", policy =>
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("AuthenticatedUser", policy =>
     {
         policy.RequireAuthenticatedUser();
     });
-});
 
 builder.Services.AddReverseProxy()
     .LoadFromConfig(builder.Configuration.GetSection("ReverseProxy"));
@@ -55,7 +52,6 @@ builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
-// Add request logging middleware
 app.Use(async (context, next) =>
 {
     var logger = context.RequestServices.GetRequiredService<ILogger<Program>>();
@@ -86,15 +82,6 @@ app.MapControllers();
 
 app.MapReverseProxy();
 
-app.MapGet("/", () => new
-{
-    Message = "Currency Tracker API Gateway",
-    Status = "Running",
-    Routes = new[]
-    {
-        "/api/users/* → UserService",
-        "/api/finance/* → FinanceService (Authenticated)"
-    }
-});
+app.MapGet("/", () => ApiDocumentation.RootResponse);
 
 app.Run();

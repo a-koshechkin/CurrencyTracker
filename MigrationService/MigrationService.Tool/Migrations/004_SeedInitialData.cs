@@ -61,37 +61,37 @@ public class SeedInitialData : Migration
             password = "$2a$12$zAOVU8lkmAO5e6uBm7rh0Oz3VKRItnBYjsXWrg0Df.0g/l1pMKiE2"
         });
 
-        Insert.IntoTable("user_favourites").Row(new
+        Insert.IntoTable("user_favorites").Row(new
         {
             user_id = 1,
             currency_id = 1
         });
 
-        Insert.IntoTable("user_favourites").Row(new
+        Insert.IntoTable("user_favorites").Row(new
         {
             user_id = 1,
             currency_id = 2
         });
 
-        Insert.IntoTable("user_favourites").Row(new
+        Insert.IntoTable("user_favorites").Row(new
         {
             user_id = 1,
             currency_id = 3
         });
 
-        Insert.IntoTable("user_favourites").Row(new
+        Insert.IntoTable("user_favorites").Row(new
         {
             user_id = 2,
             currency_id = 2
         });
 
-        Insert.IntoTable("user_favourites").Row(new
+        Insert.IntoTable("user_favorites").Row(new
         {
             user_id = 2,
             currency_id = 4
         });
 
-        Insert.IntoTable("user_favourites").Row(new
+        Insert.IntoTable("user_favorites").Row(new
         {
             user_id = 2,
             currency_id = 5
@@ -100,7 +100,7 @@ public class SeedInitialData : Migration
 
     public override void Down()
     {
-        Delete.FromTable("user_favourites").AllRows();
+        Delete.FromTable("user_favorites").AllRows();
         Delete.FromTable("user").AllRows();
         Delete.FromTable("currency").AllRows();
     }

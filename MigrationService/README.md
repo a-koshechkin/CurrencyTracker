@@ -43,7 +43,7 @@ The service creates the following tables:
 - `name` (varchar(100), not null)
 - `rate` (decimal, not null) - Exchange rate to RUB
 
-### `user_favourites` Table
+### `user_favorites` Table
 - `user_id` (int, foreign key to user.id)
 - `currency_id` (int, foreign key to currency.id)
 - Composite primary key (user_id, currency_id)

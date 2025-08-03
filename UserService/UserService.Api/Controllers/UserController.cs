@@ -20,6 +20,17 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         {
             var result = await _userService.RegisterAsync(request);
             
+            if (result == null)
+            {
+                _logger.LogWarning("User registration service returned null response for user: {UserName}", request?.Name);
+                return BadRequest(new ApiResponse<UserLoginResponse>
+                {
+                    Success = false,
+                    Message = "Service returned null response",
+                    Errors = ["Internal service error"]
+                });
+            }
+            
             if (!result.Success)
             {
                 _logger.LogWarning("User registration failed for user: {UserName}", request?.Name);
@@ -54,6 +65,17 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         {
             var result = await _userService.LoginAsync(request);
             
+            if (result == null)
+            {
+                _logger.LogWarning("User login service returned null response for user: {UserName}", request?.Name);
+                return BadRequest(new ApiResponse<UserLoginResponse>
+                {
+                    Success = false,
+                    Message = "Service returned null response",
+                    Errors = ["Internal service error"]
+                });
+            }
+            
             if (!result.Success)
             {
                 _logger.LogWarning("Login failed for user: {UserName}", request?.Name);
@@ -87,6 +109,17 @@ public class UserController(IUserService userService, ILogger<UserController> lo
         try
         {
             var result = await _userService.LogoutAsync(request);
+            
+            if (result == null)
+            {
+                _logger.LogWarning("User logout service returned null response");
+                return BadRequest(new ApiResponse<bool>
+                {
+                    Success = false,
+                    Message = "Service returned null response",
+                    Errors = ["Internal service error"]
+                });
+            }
             
             if (!result.Success)
             {

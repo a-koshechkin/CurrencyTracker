@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Shared.DTOs.DTOs;
 using System.Text.Json;
 
 namespace APIGateway.Controllers;
@@ -13,15 +14,15 @@ public class HealthController(HttpClient httpClient, IConfiguration configuratio
     [HttpGet]
     public async Task<IActionResult> GetHealth()
     {
-        var healthStatus = new
+        var healthStatus = new GatewayHealthResponse
         {
-            Gateway = new
+            Gateway = new GatewayInfo
             {
                 Status = "Healthy",
                 Timestamp = DateTime.UtcNow,
                 Message = "API Gateway is running"
             },
-            Services = new Dictionary<string, object>()
+            Services = []
         };
 
         try
@@ -30,7 +31,7 @@ public class HealthController(HttpClient httpClient, IConfiguration configuratio
             var userResponse = await _httpClient.GetAsync(userServiceUrl);
             var userContent = await userResponse.Content.ReadAsStringAsync();
             
-            healthStatus.Services["UserService"] = new
+            healthStatus.Services["UserService"] = new ServiceHealthInfo
             {
                 Status = userResponse.IsSuccessStatusCode ? "Healthy" : "Unhealthy",
                 Response = JsonSerializer.Deserialize<object>(userContent),
@@ -39,7 +40,7 @@ public class HealthController(HttpClient httpClient, IConfiguration configuratio
         }
         catch (Exception ex)
         {
-            healthStatus.Services["UserService"] = new
+            healthStatus.Services["UserService"] = new ServiceHealthInfo
             {
                 Status = "Unhealthy",
                 Error = ex.Message
@@ -52,7 +53,7 @@ public class HealthController(HttpClient httpClient, IConfiguration configuratio
             var financeResponse = await _httpClient.GetAsync(financeServiceUrl);
             var financeContent = await financeResponse.Content.ReadAsStringAsync();
             
-            healthStatus.Services["FinanceService"] = new
+            healthStatus.Services["FinanceService"] = new ServiceHealthInfo
             {
                 Status = financeResponse.IsSuccessStatusCode ? "Healthy" : "Unhealthy",
                 Response = JsonSerializer.Deserialize<object>(financeContent),
@@ -61,7 +62,7 @@ public class HealthController(HttpClient httpClient, IConfiguration configuratio
         }
         catch (Exception ex)
         {
-            healthStatus.Services["FinanceService"] = new
+            healthStatus.Services["FinanceService"] = new ServiceHealthInfo
             {
                 Status = "Unhealthy",
                 Error = ex.Message

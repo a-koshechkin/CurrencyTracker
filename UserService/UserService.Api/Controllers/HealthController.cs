@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Shared.DTOs.DTOs;
 using System.Reflection;
 
 namespace UserService.Api.Controllers;
@@ -12,9 +13,9 @@ public class HealthController(IConfiguration configuration) : ControllerBase
     [HttpGet]
     public IActionResult GetHealth()
     {
-        var healthStatus = new
+        var healthStatus = new HealthResponse
         {
-            Service = new
+            Service = new ServiceInfo
             {
                 Name = "User Service",
                 Status = "Healthy",

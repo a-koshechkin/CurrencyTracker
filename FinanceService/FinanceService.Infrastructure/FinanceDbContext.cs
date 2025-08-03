@@ -33,7 +33,7 @@ public class FinanceDbContext(DbContextOptions<FinanceDbContext> options) : DbCo
 
         modelBuilder.Entity<UserFavorite>(entity =>
         {
-            entity.ToTable("user_favourites");
+            entity.ToTable("user_favorites");
             entity.HasKey(e => new { e.UserId, e.CurrencyId });
             entity.Property(e => e.UserId).HasColumnName("user_id");
             entity.Property(e => e.CurrencyId).HasColumnName("currency_id");
