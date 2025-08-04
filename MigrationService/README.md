@@ -1,116 +1,46 @@
 # Migration Service
 
-A .NET 8 console application for managing database migrations using FluentMigrator and PostgreSQL.
+Database migration tool using FluentMigrator.
 
-## Prerequisites
+## Features
 
-- .NET 8.0 SDK
-- Docker and Docker Compose
-- PostgreSQL 15 (or use Docker)
-
-## Quick Start
-
-### Using Docker Compose (Recommended)
-
-```bash
-cd MigrationService
-docker-compose up
-```
-
-This will:
-1. Start PostgreSQL 15 container
-2. Wait for database to be healthy
-3. Run all pending migrations
-4. Seed initial currency data
+- **Database Migrations**: Schema and data migrations
+- **Rollback Support**: Version-based rollbacks
+- **PostgreSQL Support**: Native PostgreSQL integration
+- **Seed Data**: Initial data population
 
 ## Usage
 
-### Available Commands
-- `--migrate` - Run all pending migrations
-- `--rollback --version=X` - Rollback to specific version
+```bash
+# Run all pending migrations
+dotnet run --migrate
 
-## Database Schema
+# Rollback to specific version
+dotnet run --rollback --version=003
+```
 
-The service creates the following tables:
+## Migrations
 
-### `user` Table
-- `id` (int, primary key, identity)
-- `name` (varchar(100), not null)
-- `password` (varchar(255), not null)
-
-### `currency` Table
-- `id` (int, primary key, identity)
-- `name` (varchar(100), not null)
-- `rate` (decimal, not null) - Exchange rate to RUB
-
-### `user_favorites` Table
-- `user_id` (int, foreign key to user.id)
-- `currency_id` (int, foreign key to currency.id)
-- Composite primary key (user_id, currency_id)
+- `001_CreateUsersTable.cs` - User table schema
+- `002_CreateCurrenciesTable.cs` - Currency table schema
+- `003_CreateUserFavouritesTable.cs` - Favorites table schema
+- `004_SeedInitialData.cs` - Initial data seeding
 
 ## Configuration
 
-### Polly Retry Settings
-```json
-{
-  "Polly": {
-    "DatabaseRetry": {
-      "MaxRetries": 10,
-      "BaseDelaySeconds": 2
-    },
-    "MigrationRetry": {
-      "MaxRetries": 3,
-      "BaseDelaySeconds": 2
-    }
-  }
-}
-```
+Database connection configured in `appsettings.json`.
 
-### Logging
-```json
-{
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "FluentMigrator.Runner": "Information",
-      "MigrationService.Tool.Services": "Debug"
-    }
-  }
-}
-```
+## Running
 
-## Project Structure
+```bash
+# Build and run with Docker
+docker build -f MigrationService/Dockerfile -t migration-service .
 
-```
-MigrationService/
-├── MigrationService.Tool/           # Main console application
-│   ├── Configuration/              # DI configuration
-│   ├── Migrations/                 # FluentMigrator migrations
-│   ├── Services/                   # Business logic services
-│   ├── Program.cs                  # Entry point
-│   └── appsettings.json           # Configuration
-├── docker-compose.yml             # Docker orchestration
-└── README.md                      # This file
-```
+# Run migrations
+docker run --rm --network currency-tracker-network \
+  -e ConnectionStrings__DefaultConnection="Host=postgres;Database=currency_tracker;Username=postgres;Password=postgres" \
+  migration-service --migrate
 
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Connection refused**: Ensure PostgreSQL is running and accessible
-2. **Permission denied**: Check database user permissions
-3. **Migration already applied**: Use rollback to revert changes
-
-### Logs
-
-Enable debug logging to see detailed migration information:
-```json
-{
-  "Logging": {
-    "LogLevel": {
-      "MigrationService.Tool.Services": "Debug"
-    }
-  }
-}
+# Or run locally
+dotnet run --project MigrationService.Tool
 ```

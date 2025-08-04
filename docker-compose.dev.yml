@@ -3,7 +3,7 @@ x-common-env: &common-env
   ConnectionStrings__DefaultConnection: Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
 
 x-jwt-env: &jwt-env
-  Jwt__SecretKey: your-super-secret-key-with-at-least-32-characters-for-development
+  Jwt__SecretKey: cl7F4MnVp24VCH6tkCBCZ9aHJbklPMZnV7jrP7gTO38=
   Jwt__Issuer: CurrencyTracker
   Jwt__Audience: CurrencyTrackerUsers
   Jwt__ExpirationMinutes: 60
@@ -68,7 +68,7 @@ services:
       migrationservice:
         condition: service_completed_successfully
     environment:
-      <<: *common-env
+      <<: [*common-env, *jwt-env]
       ASPNETCORE_URLS: http://+:8080
     networks:
       - backend

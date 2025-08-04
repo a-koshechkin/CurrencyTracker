@@ -23,7 +23,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"] ?? "your-super-secret-key-with-at-least-32-characters"))
+                Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"] ?? "cl7F4MnVp24VCH6tkCBCZ9aHJbklPMZnV7jrP7gTO38="))
         };
     });
 
@@ -82,6 +82,13 @@ app.MapControllers();
 
 app.MapReverseProxy();
 
-app.MapGet("/", () => ApiDocumentation.RootResponse);
+app.MapGet("/", () => new
+{
+    Message = "Currency Tracker API Gateway",
+    Status = "Running",
+    Version = "v1",
+    Documentation = "/api/v1/docs",
+    Health = "/api/health"
+});
 
 app.Run();
