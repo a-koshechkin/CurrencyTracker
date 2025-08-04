@@ -1,31 +1,41 @@
+using APIGateway.Configuration;
+using APIGateway.Constants;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace APIGateway.Controllers;
 
 [ApiController]
-[Route("api/v1")]
-public class ApiController : ControllerBase
+[Route(ApiConstants.Routes.Base)]
+public class ApiController(IOptions<AppSettings> appSettings) : ControllerBase
 {
-    private static readonly string[] Resources =
-    [
-        "/auth/* - User authentication and authorization",
-        "/currencies/* - Currency information and data", 
-        "/favorites/* - User favorite currencies management"
-    ];
+    private readonly ApiSettings _apiSettings = appSettings.Value.Api;
 
     [HttpGet]
     public IActionResult GetApiInfo()
     {
+        var baseUrl = $"{Request.Scheme}://{Request.Host}{_apiSettings.BasePath}";
+        
         return Ok(new
         {
-            Name = "Currency Tracker API",
-            Version = "1.0",
-            Description = "RESTful API for currency tracking and user management",
-            BaseUrl = $"{Request.Scheme}://{Request.Host}/api/v1",
-            Documentation = $"{Request.Scheme}://{Request.Host}/api/v1/docs",
-            Health = $"{Request.Scheme}://{Request.Host}/api/health",
-            Resources,
-            Authentication = "Bearer Token required for protected endpoints"
+            Name = _apiSettings.Name,
+            Version = _apiSettings.Version,
+            Description = _apiSettings.Description,
+            BaseUrl = baseUrl,
+            Documentation = $"{Request.Scheme}://{Request.Host}{_apiSettings.DocumentationPath}",
+            Health = $"{Request.Scheme}://{Request.Host}{_apiSettings.HealthPath}",
+            Resources = GetResources(),
+            Authentication = $"{ApiConstants.Authentication.Bearer} Token required for protected endpoints"
         });
+    }
+
+    private static string[] GetResources()
+    {
+        return
+        [
+            $"{ApiEndpoints.Authentication.BasePath}/* - {ApiEndpoints.Authentication.Description}",
+            $"{ApiEndpoints.Currencies.BasePath}/* - {ApiEndpoints.Currencies.Description}",
+            $"{ApiEndpoints.Favorites.BasePath}/* - {ApiEndpoints.Favorites.Description}"
+        ];
     }
 } 
