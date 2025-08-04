@@ -1,4 +1,5 @@
 using CurrencyWorker.Application.Services;
+using CurrencyWorker.Domain.Configuration;
 
 namespace CurrencyWorker.Worker;
 
@@ -11,14 +12,13 @@ public class CurrencyUpdateWorker : BackgroundService
     public CurrencyUpdateWorker(
         CurrencyUpdateService currencyUpdateService,
         ILogger<CurrencyUpdateWorker> logger,
-        IConfiguration configuration)
+        ConfigurationService configurationService)
     {
         _currencyUpdateService = currencyUpdateService;
         _logger = logger;
         
-        // Get update interval from configuration (default: 1 hour)
-        var intervalMinutes = configuration.GetValue<int>("CurrencyUpdate:IntervalMinutes", 60);
-        _updateInterval = TimeSpan.FromMinutes(intervalMinutes);
+        var config = configurationService.Worker;
+        _updateInterval = TimeSpan.FromMinutes(config.UpdateIntervalMinutes);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -52,7 +52,6 @@ public class CurrencyUpdateWorker : BackgroundService
                 _logger.LogError(ex, "Unexpected error during currency rates update");
             }
 
-            // Wait for next update interval
             await Task.Delay(_updateInterval, stoppingToken);
         }
 

@@ -1,7 +1,6 @@
+using CurrencyWorker.Domain.Configuration;
 using CurrencyWorker.Domain.Interfaces;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Npgsql;
 using Polly.Retry;
 using Shared.Domain.Entities;
@@ -16,25 +15,17 @@ public class CurrencyRepository : ICurrencyRepository
     private readonly AsyncRetryPolicy _retryPolicy;
 
     public CurrencyRepository(
-        IConfiguration configuration,
-        ILogger<CurrencyRepository> logger,
-        IOptions<PollyConfiguration>? pollyConfig = null)
+        ConfigurationService configurationService,
+        ILogger<CurrencyRepository> logger)
     {
-        _connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured");
+        var config = configurationService.Database;
+        _connectionString = config.BuildConnectionString();
         _logger = logger;
         
-        if (pollyConfig != null)
-        {
-            _retryPolicy = RetryPolicyFactory.CreateDatabaseRetryPolicy(pollyConfig, logger);
-        }
-        else
-        {
-            _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
-                new RetryConfiguration { MaxRetries = 3, BaseDelaySeconds = 2 }, 
-                logger, 
-                "Database operation");
-        }
+        _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
+            new RetryConfiguration { MaxRetries = config.MaxRetries, BaseDelaySeconds = config.BaseDelaySeconds }, 
+            logger, 
+            "Database operation");
     }
 
     public async Task UpdateCurrencyRatesAsync(IEnumerable<CurrencyRate> rates, CancellationToken cancellationToken = default)
@@ -51,7 +42,6 @@ public class CurrencyRepository : ICurrencyRepository
             {
                 try
                 {
-                    // Try to update existing currency by code
                     var rowsAffected = await UpdateExistingCurrencyAsync(connection, rate, cancellationToken);
                     
                     if (rowsAffected > 0)
@@ -60,7 +50,6 @@ public class CurrencyRepository : ICurrencyRepository
                     }
                     else
                     {
-                        // If no existing currency found, insert new one
                         await InsertNewCurrencyAsync(connection, rate, cancellationToken);
                         insertedCount++;
                     }

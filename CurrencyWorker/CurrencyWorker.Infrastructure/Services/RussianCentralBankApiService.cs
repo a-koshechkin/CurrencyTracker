@@ -1,11 +1,11 @@
+using CurrencyWorker.Domain.Configuration;
 using CurrencyWorker.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Polly.Retry;
 using Shared.Domain.Entities;
 using Shared.Infrastructure.Services;
-using System.Xml.Linq;
 using System.Text;
+using System.Xml.Linq;
 
 namespace CurrencyWorker.Infrastructure.Services;
 
@@ -14,35 +14,25 @@ public class RussianCentralBankApiService : ICurrencyApiService
     private readonly HttpClient _httpClient;
     private readonly ILogger<RussianCentralBankApiService> _logger;
     private readonly AsyncRetryPolicy _retryPolicy;
-    private const string ApiUrl = "http://www.cbr.ru/scripts/XML_daily.asp";
+    private readonly CurrencyApiConfiguration _config;
 
     public RussianCentralBankApiService(
         HttpClient httpClient,
         ILogger<RussianCentralBankApiService> logger,
-        IOptions<PollyConfiguration>? pollyConfig = null)
+        ConfigurationService configurationService)
     {
         _httpClient = httpClient;
         _logger = logger;
+        _config = configurationService.CurrencyApi;
         
-        if (pollyConfig != null)
-        {
-            _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
-                new RetryConfiguration { MaxRetries = 3, BaseDelaySeconds = 2 }, 
-                logger, 
-                "API call");
-        }
-        else
-        {
-            _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
-                new RetryConfiguration { MaxRetries = 3, BaseDelaySeconds = 2 }, 
-                logger, 
-                "API call");
-        }
+        _retryPolicy = RetryPolicyFactory.CreateRetryPolicy(
+            new RetryConfiguration { MaxRetries = _config.MaxRetries, BaseDelaySeconds = _config.BaseDelaySeconds }, 
+            logger, 
+            "API call");
     }
 
     static RussianCentralBankApiService()
     {
-        // Register the CodePages encoding provider to support windows-1251
         Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
     }
 
@@ -52,14 +42,13 @@ public class RussianCentralBankApiService : ICurrencyApiService
         {
             _logger.LogInformation("Fetching currency rates from Russian Central Bank API...");
 
-            // Get response as bytes to handle encoding manually
-            var response = await _httpClient.GetAsync(ApiUrl, cancellationToken);
+            var response = await _httpClient.GetAsync(_config.BaseUrl, cancellationToken);
             response.EnsureSuccessStatusCode();
             
             var responseBytes = await response.Content.ReadAsByteArrayAsync(cancellationToken);
             
-            // Decode using windows-1251 encoding
-            var responseText = Encoding.GetEncoding(1251).GetString(responseBytes);
+            var encoding = Encoding.GetEncoding(_config.Encoding);
+            var responseText = encoding.GetString(responseBytes);
             
             var xmlDoc = XDocument.Parse(responseText);
 
@@ -85,7 +74,6 @@ public class RussianCentralBankApiService : ICurrencyApiService
         if (string.IsNullOrEmpty(nominal))
             return 0;
 
-        // Russian Central Bank uses comma as decimal separator
         var normalizedValue = value.Replace(',', '.');
         
         if (decimal.TryParse(normalizedValue, out var rate) && decimal.TryParse(nominal, out var nominalValue))
