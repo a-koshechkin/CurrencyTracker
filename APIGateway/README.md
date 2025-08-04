@@ -24,6 +24,14 @@ Routes are configured in `appsettings.json` under the `ReverseProxy` section.
 This service runs as part of the main application:
 
 ```bash
-# Start all services (recommended)
-docker-compose up -d
-``` 
+# Development
+docker-compose -f docker-compose.dev.yml up -d
+
+# Production
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+## Access
+
+- **Development**: `http://localhost:5000`
+- **Production**: `http://localhost:8080` 

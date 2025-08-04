@@ -13,23 +13,30 @@ A microservices-based currency tracking application built with .NET 8.
 
 ## Quick Start
 
+### Development Environment
+
 ```bash
-# Build migration image
-docker build -f MigrationService/Dockerfile -t currencytracker-migration .
-
-# Run migrations
-docker run --rm --network currency-tracker-network \
-  -e ConnectionStrings__DefaultConnection="Host=postgres;Database=currency_tracker;Username=postgres;Password=postgres" \
-  currencytracker-migration --migrate
-
-# Start services
-docker-compose up -d
+# Start all services with development configuration
+docker-compose -f docker-compose.dev.yml up -d
 ```
+
+### Production Environment
+
+```bash
+# Start all services with production configuration
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+### What happens at start:
+- Database (PostgreSQL) is started
+- MigrationService runs database migrations
+- All microservices start after migrations complete
+- CurrencyWorker begins updating currency rates every 60 minutes
 
 ## Services
 
-- **API Gateway**: `http://localhost:5000`
-- **API Documentation**: `http://localhost:5000/api/v1/docs`
+- **API Gateway**: `http://localhost:5000` (dev) / `http://localhost:8080` (prod)
+- **API Documentation**: `http://localhost:5000/api/v1/docs` (dev) / `http://localhost:8080/api/v1/docs` (prod)
 
 ## Tech Stack
 

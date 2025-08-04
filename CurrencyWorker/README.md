@@ -28,8 +28,11 @@ Update intervals and API endpoints configured in `appsettings.json`.
 This service runs as part of the main application:
 
 ```bash
-# Start all services (recommended)
-docker-compose up -d
+# Development
+docker-compose -f docker-compose.dev.yml up -d
+
+# Production
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
-**Note**: This is a background service that runs automatically. 
+**Note**: This is a background service that runs automatically and updates currency rates every 60 minutes. 

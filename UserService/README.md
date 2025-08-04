@@ -32,11 +32,14 @@ Uses PostgreSQL with Entity Framework Core for user data storage.
 This service runs as part of the main application:
 
 ```bash
-# Start all services (recommended)
-docker-compose up -d
+# Development
+docker-compose -f docker-compose.dev.yml up -d
+
+# Production
+docker-compose -f docker-compose.prod.yml up -d
 
 # Or run individually (development only)
-docker-compose up userservice
+docker-compose -f docker-compose.dev.yml up userservice
 ```
 
 **Note**: This service is not exposed directly. Access via API Gateway at `/api/v1/auth/*` 

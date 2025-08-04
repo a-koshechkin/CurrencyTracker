@@ -32,8 +32,11 @@ Uses PostgreSQL with Entity Framework Core for currency and favorites data.
 This service runs as part of the main application:
 
 ```bash
-# Start all services (recommended)
-docker-compose up -d
+# Development
+docker-compose -f docker-compose.dev.yml up -d
+
+# Production
+docker-compose -f docker-compose.prod.yml up -d
 ```
 
 **Note**: This service is not exposed directly. Access via API Gateway at `/api/v1/currencies/*` and `/api/v1/favorites/*` 
