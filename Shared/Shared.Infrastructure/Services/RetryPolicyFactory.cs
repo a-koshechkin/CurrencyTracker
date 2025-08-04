@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Retry;
+using Shared.Infrastructure.Configuration;
 
 namespace Shared.Infrastructure.Services;
 

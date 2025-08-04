@@ -1,6 +1,3 @@
-using System.Security.Cryptography;
-using System.Text;
-
 namespace Shared.Identity.Services;
 
 public class SimplePasswordHasher : IPasswordHasher

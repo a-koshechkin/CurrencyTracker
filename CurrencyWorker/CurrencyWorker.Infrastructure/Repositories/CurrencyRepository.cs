@@ -3,7 +3,8 @@ using CurrencyWorker.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using Polly.Retry;
-using Shared.Domain.Entities;
+using Shared.DTOs.DTOs;
+using Shared.Infrastructure.Configuration;
 using Shared.Infrastructure.Services;
 
 namespace CurrencyWorker.Infrastructure.Repositories;

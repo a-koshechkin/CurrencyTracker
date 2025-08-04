@@ -312,7 +312,7 @@ public class UserServiceIntegrationTests : IDisposable
 
         var results = await Task.WhenAll(task1, task2);
 
-        // Assert - One should succeed, one should fail
+        // Assert
         var successCount = results.Count(r => 
             r.Result is OkObjectResult okResult && 
             okResult.Value is ApiResponse<UserLoginResponse> response && 

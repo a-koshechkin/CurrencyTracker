@@ -115,7 +115,7 @@ public class CurrencyRepositoryTests : IDisposable
         var result = await _repository.GetCurrencyByNameAsync("usd");
 
         // Assert
-        Assert.Null(result); // Should be case sensitive
+        Assert.Null(result);
     }
 
     #endregion

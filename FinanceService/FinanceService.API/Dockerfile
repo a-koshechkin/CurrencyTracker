@@ -5,7 +5,6 @@ EXPOSE 5000
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copy project files
 COPY ["FinanceService/FinanceService.API/FinanceService.API.csproj", "FinanceService/FinanceService.API/"]
 COPY ["FinanceService/FinanceService.Application/FinanceService.Application.csproj", "FinanceService/FinanceService.Application/"]
 COPY ["FinanceService/FinanceService.Domain/FinanceService.Domain.csproj", "FinanceService/FinanceService.Domain/"]
@@ -13,14 +12,11 @@ COPY ["FinanceService/FinanceService.Infrastructure/FinanceService.Infrastructur
 COPY ["Shared/Shared.Domain/Shared.Domain.csproj", "Shared/Shared.Domain/"]
 COPY ["Shared/Shared.DTOs/Shared.DTOs.csproj", "Shared/Shared.DTOs/"]
 
-# Restore dependencies
 RUN dotnet restore "FinanceService/FinanceService.API/FinanceService.API.csproj"
 
-# Copy source code
 COPY . .
 WORKDIR "/src/FinanceService/FinanceService.API"
 
-# Build the application
 RUN dotnet build "FinanceService.API.csproj" -c Release -o /app/build
 
 FROM build AS publish

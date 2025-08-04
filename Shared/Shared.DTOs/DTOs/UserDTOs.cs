@@ -18,7 +18,7 @@ public record UserLoginResponse
     public string Name { get; init; } = string.Empty;
     public string AccessToken { get; init; } = string.Empty;
     public string TokenType { get; init; } = "Bearer";
-    public int ExpiresIn { get; init; } = 3600; // 1 hour in seconds
+    public int ExpiresIn { get; init; } = 3600;
 }
 
 public record UserLogoutRequest

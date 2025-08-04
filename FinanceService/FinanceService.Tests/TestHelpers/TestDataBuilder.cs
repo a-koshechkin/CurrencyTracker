@@ -14,67 +14,9 @@ public static class TestDataBuilder
         return $"user_{Interlocked.Increment(ref _userCounter)}_{Guid.NewGuid():N}"[..20];
     }
 
-    private static string GenerateUniqueCurrencyCode()
-    {
-        return $"CUR{Interlocked.Increment(ref _currencyCounter):D3}";
-    }
-
     private static string GenerateUniqueCurrencyName()
     {
         return $"Currency_{Interlocked.Increment(ref _currencyCounter)}_{Guid.NewGuid():N}"[..30];
-    }
-
-    #endregion
-
-    #region Test Data Collections
-
-    public static IEnumerable<object[]> GetEmptyOrNullCurrencyCodeData()
-    {
-        return
-        [
-            [""],
-            [null!],
-            ["   "],
-            ["\t"],
-            ["\n"]
-        ];
-    }
-
-    public static IEnumerable<object[]> GetInvalidUserIdData()
-    {
-        return
-        [
-            [0],
-            [-1],
-            [-100]
-        ];
-    }
-
-    public static IEnumerable<object[]> GetValidCurrencyCodeData()
-    {
-        return
-        [
-            ["USD"],
-            ["EUR"],
-            ["GBP"],
-            ["JPY"],
-            ["AUD"],
-            ["CAD"],
-            ["CHF"],
-            ["CNY"],
-            ["VND"],
-            ["INR"]
-        ];
-    }
-
-    public static IEnumerable<object[]> GetValidUserIdData()
-    {
-        return
-        [
-            [1],
-            [100],
-            [999999]
-        ];
     }
 
     #endregion
@@ -108,16 +50,6 @@ public static class TestDataBuilder
             UserId = userId,
             CurrencyId = currencyId
         };
-    }
-
-    public static List<User> CreateTestUsers(int count = 5)
-    {
-        var users = new List<User>();
-        for (int i = 0; i < count; i++)
-        {
-            users.Add(CreateTestUser());
-        }
-        return users;
     }
 
     public static List<Currency> CreateTestCurrencies(int count = 10)

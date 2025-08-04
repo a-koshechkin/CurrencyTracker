@@ -230,7 +230,6 @@ public class UserFavoriteRepositoryTests : IDisposable
         await _context.UserFavorites.AddAsync(testFavorite);
         await _context.SaveChangesAsync();
 
-        // Verify favorite exists before removal
         var existingFavorite = await _context.UserFavorites
             .FirstOrDefaultAsync(uf => uf.UserId == userId && uf.CurrencyId == currencyId);
         Assert.NotNull(existingFavorite);

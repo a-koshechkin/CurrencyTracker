@@ -14,6 +14,5 @@ public class Currency
     [Column("rate")]
     public decimal Rate { get; set; }
 
-    // Navigation properties for favorites
     public virtual ICollection<UserFavorite> UserFavorites { get; set; } = [];
 }

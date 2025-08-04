@@ -1,4 +1,4 @@
-using Shared.Domain.Entities;
+using Shared.DTOs.DTOs;
 
 namespace CurrencyWorker.Domain.Interfaces;
 

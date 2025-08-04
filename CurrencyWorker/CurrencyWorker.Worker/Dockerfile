@@ -11,7 +11,6 @@ COPY ["CurrencyWorker/CurrencyWorker.Infrastructure/CurrencyWorker.Infrastructur
 COPY ["Shared/Shared.Domain/Shared.Domain.csproj", "Shared/Shared.Domain/"]
 COPY ["Shared/Shared.Identity/Shared.Identity.csproj", "Shared/Shared.Identity/"]
 
-# Restore dependencies
 RUN dotnet restore "CurrencyWorker/CurrencyWorker.Worker/CurrencyWorker.Worker.csproj"
 COPY . .
 WORKDIR "/src/CurrencyWorker/CurrencyWorker.Worker"

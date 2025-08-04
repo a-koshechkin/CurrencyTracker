@@ -11,7 +11,6 @@ public class UserFavorite
     [Column("currency_id")]
     public int CurrencyId { get; set; }
     
-    // Navigation properties
     public virtual User User { get; set; } = null!;
     public virtual Currency Currency { get; set; } = null!;
 } 

@@ -34,6 +34,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Shared\Shared.Domain\Shared.Domain.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.DTOs\Shared.DTOs.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Infrastructure\Shared.Infrastructure.csproj" />
     <ProjectReference Include="..\CurrencyWorker.Domain\CurrencyWorker.Domain.csproj" />
   </ItemGroup>

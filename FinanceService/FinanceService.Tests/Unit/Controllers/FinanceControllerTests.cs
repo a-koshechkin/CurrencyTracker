@@ -238,9 +238,6 @@ public class FinanceControllerTests
         Assert.Equal("User ID not found", response.Message);
     }
 
-    // Note: Input validation is now handled by validation attributes on the DTO
-    // No need to test empty/whitespace currency codes as they will be caught by [Required] and [StringLength] attributes
-
     [Fact]
     public async Task AddToFavorites_CurrencyAlreadyInFavorites_ReturnsBadRequest()
     {
@@ -349,9 +346,6 @@ public class FinanceControllerTests
         Assert.False(response.Success);
         Assert.Equal("User ID not found", response.Message);
     }
-
-    // Note: Input validation is now handled by validation attributes on the DTO
-    // No need to test empty/whitespace currency codes as they will be caught by [Required] and [StringLength] attributes
 
     [Fact]
     public async Task RemoveFromFavorites_CurrencyNotInFavorites_ReturnsNotFound()

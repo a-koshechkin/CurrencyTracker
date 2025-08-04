@@ -2,7 +2,8 @@ using CurrencyWorker.Domain.Configuration;
 using CurrencyWorker.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
 using Polly.Retry;
-using Shared.Domain.Entities;
+using Shared.DTOs.DTOs;
+using Shared.Infrastructure.Configuration;
 using Shared.Infrastructure.Services;
 using System.Text;
 using System.Xml.Linq;
@@ -53,11 +54,10 @@ public class RussianCentralBankApiService : ICurrencyApiService
             var xmlDoc = XDocument.Parse(responseText);
 
             var rates = xmlDoc.Descendants("Valute")
-                .Select(valute => new CurrencyRate
-                {
-                    CurrencyCode = valute.Element("CharCode")?.Value ?? string.Empty,
-                    Rate = ParseRate(valute.Element("Value")?.Value, valute.Element("Nominal")?.Value)
-                })
+                .Select(valute => new CurrencyRate(
+                    CurrencyCode: valute.Element("CharCode")?.Value ?? string.Empty,
+                    Rate: ParseRate(valute.Element("Value")?.Value, valute.Element("Nominal")?.Value)
+                ))
                 .Where(rate => !string.IsNullOrEmpty(rate.CurrencyCode) && rate.Rate > 0)
                 .ToList();
 

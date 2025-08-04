@@ -20,4 +20,6 @@ public record CurrencyResponse
 public record AddFavoriteRequest
 {
     public string CurrencyCode { get; init; } = string.Empty;
-} 
+}
+
+public record CurrencyRate(string CurrencyCode, decimal Rate); 

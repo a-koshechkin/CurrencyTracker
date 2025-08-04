@@ -51,17 +51,16 @@ public class CurrencyValidationTests
 
     #endregion
 
-    #region CurrencyRate Entity Validation Tests
+    #region CurrencyRate DTO Validation Tests
 
     [Fact]
     public void CurrencyRate_WithValidData_IsValid()
     {
         // Arrange & Act
-        var currencyRate = new CurrencyRate
-        {
-            CurrencyCode = "USD",
-            Rate = 1.0m
-        };
+        var currencyRate = new CurrencyRate(
+            CurrencyCode: "USD",
+            Rate: 1.0m
+        );
 
         // Assert
         Assert.Equal("USD", currencyRate.CurrencyCode);

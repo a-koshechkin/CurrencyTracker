@@ -17,7 +17,6 @@ public class ConfigurationService
         Worker = configuration.GetSection("Worker").Get<WorkerConfiguration>() 
             ?? new WorkerConfiguration();
             
-        // Read connection string from standard ConnectionStrings__DefaultConnection format
         var connectionString = configuration.GetConnectionString("DefaultConnection");
         if (!string.IsNullOrEmpty(connectionString))
         {

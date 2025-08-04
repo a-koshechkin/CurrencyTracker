@@ -17,7 +17,7 @@ public class DatabaseSettings
 
     public string Host { get; set; } = "postgresql";
     public int Port { get; set; } = 5432;
-    public string Database { get; set; } = "currencytracker_dev";
+    public string Database { get; set; } = "currencytracker";
     public string Username { get; set; } = "postgres";
     public string Password { get; set; } = "admin";
 

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Npgsql;
 using Polly.Retry;
+using Shared.Infrastructure.Configuration;
 
 namespace Shared.Infrastructure.Services;
 

@@ -40,12 +40,12 @@ For running migrations or rollback operations, you can run the already deployed 
 ```bash
 # Run all pending migrations (including seed data)
 docker run --rm --network currency-tracker-network \
-  -e ConnectionStrings__DefaultConnection="Host=postgresql;Database=currencytracker_dev;Username=postgres;Password=admin" \
+  -e ConnectionStrings__DefaultConnection="Host=postgresql;Database=currencytracker;Username=postgres;Password=admin" \
   currencytracker-migration --migrate
 
 # Rollback to specific version
 docker run --rm --network currency-tracker-network \
-  -e ConnectionStrings__DefaultConnection="Host=postgresql;Database=currencytracker_dev;Username=postgres;Password=admin" \
+  -e ConnectionStrings__DefaultConnection="Host=postgresql;Database=currencytracker;Username=postgres;Password=admin" \
   currencytracker-migration --rollback --version=003
 ```
 

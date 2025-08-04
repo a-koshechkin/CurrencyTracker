@@ -53,7 +53,6 @@ public class HealthController(HttpClient httpClient, IOptions<AppSettings> appSe
             
             object? responseContent = null;
             
-            // Only deserialize if we have content and it's a successful response
             if (response.IsSuccessStatusCode && response.Content.Headers.ContentLength > 0)
             {
                 var content = await response.Content.ReadAsStringAsync(cts.Token);
@@ -61,12 +60,10 @@ public class HealthController(HttpClient httpClient, IOptions<AppSettings> appSe
                 {
                     try
                     {
-                        // Deserialize the JSON content to an object
                         responseContent = JsonSerializer.Deserialize<object>(content);
                     }
                     catch (JsonException)
                     {
-                        // If deserialization fails, store as string (fallback)
                         responseContent = content;
                     }
                 }
