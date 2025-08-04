@@ -10,8 +10,8 @@ public class CreateUsersTable : Migration
     {
         Create.Table(DatabaseConstants.Tables.User)
             .WithColumn(DatabaseConstants.Columns.User.Id).AsInt32().PrimaryKey().Identity()
-            .WithColumn(DatabaseConstants.Columns.User.Name).AsString(100).NotNullable()
-            .WithColumn(DatabaseConstants.Columns.User.Password).AsString(255).NotNullable();
+            .WithColumn(DatabaseConstants.Columns.User.Name).AsString(DatabaseConstants.DataTypes.UserNameMaxLength).NotNullable()
+            .WithColumn(DatabaseConstants.Columns.User.Password).AsString(DatabaseConstants.DataTypes.PasswordMaxLength).NotNullable();
     }
 
     public override void Down()

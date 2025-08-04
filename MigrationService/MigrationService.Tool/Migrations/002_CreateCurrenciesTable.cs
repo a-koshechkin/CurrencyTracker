@@ -10,8 +10,8 @@ public class CreateCurrenciesTable : Migration
     {
         Create.Table(DatabaseConstants.Tables.Currency)
             .WithColumn(DatabaseConstants.Columns.Currency.Id).AsInt32().PrimaryKey().Identity()
-            .WithColumn(DatabaseConstants.Columns.Currency.Name).AsString(100).NotNullable()
-            .WithColumn(DatabaseConstants.Columns.Currency.Rate).AsDecimal(18, 6).NotNullable();
+            .WithColumn(DatabaseConstants.Columns.Currency.Name).AsString(DatabaseConstants.DataTypes.CurrencyNameMaxLength).NotNullable()
+            .WithColumn(DatabaseConstants.Columns.Currency.Rate).AsDecimal(DatabaseConstants.DataTypes.CurrencyRatePrecision, DatabaseConstants.DataTypes.CurrencyRateScale).NotNullable();
     }
 
     public override void Down()

@@ -37,5 +37,20 @@ public static class DatabaseConstants
         public const string PrimaryKey = "PK_{0}";
         public const string ForeignKey = "FK_{0}_{1}";
         public const string Unique = "UQ_{0}_{1}";
+        public const string Index = "IX_{0}_{1}";
+    }
+
+    public static class DataTypes
+    {
+        public const int UserNameMaxLength = 100;
+        public const int PasswordMaxLength = 255;
+        public const int CurrencyNameMaxLength = 10;
+        public const int CurrencyRatePrecision = 10;
+        public const int CurrencyRateScale = 4;
+    }
+
+    public static class DefaultValues
+    {
+        public const string DefaultPasswordHash = "$2a$12$5qIf.dz9JhgK5y.52r6G7OeO41uHgwEki/FAVc8sqqOLmhmu7A8Ge"; // "password"
     }
 } 
