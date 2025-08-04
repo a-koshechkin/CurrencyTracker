@@ -1,15 +1,37 @@
-version: '3.8'
-
 services:
+  # PostgreSQL Database (Production)
+  postgresql:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: currencytracker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d currencytracker"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - backend
+
   # Migration Service (Production)
   migrationservice:
     build:
       context: .
       dockerfile: MigrationService/MigrationService.Tool/Dockerfile
+    depends_on:
+      postgresql:
+        condition: service_healthy
     command: ["--migrate"]
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=${DATABASE_CONNECTION_STRING}
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+    networks:
+      - backend
     restart: "no"
 
   # Currency Worker (Production)
@@ -20,8 +42,75 @@ services:
     depends_on:
       migrationservice:
         condition: service_completed_successfully
+      postgresql:
+        condition: service_healthy
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=${DATABASE_CONNECTION_STRING}
-      - CurrencyUpdate__IntervalMinutes=${CURRENCY_UPDATE_INTERVAL:-60}
-    restart: unless-stopped 
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+      - CurrencyUpdate__IntervalMinutes=60
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # User Service (Production)
+  userservice:
+    build:
+      context: .
+      dockerfile: UserService/Dockerfile
+    depends_on:
+      migrationservice:
+        condition: service_completed_successfully
+      postgresql:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # Finance Service (Production)
+  financeservice:
+    build:
+      context: .
+      dockerfile: FinanceService/FinanceService.API/Dockerfile
+    depends_on:
+      migrationservice:
+        condition: service_completed_successfully
+      postgresql:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+    networks:
+      - backend
+    restart: unless-stopped
+
+  # API Gateway (Production)
+  apigateway:
+    build:
+      context: .
+      dockerfile: APIGateway/APIGateway/Dockerfile
+    depends_on:
+      - userservice
+      - financeservice
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - Jwt__SecretKey=cl7F4MnVp24VCH6tkCBCZ9aHJbklPMZnV7jrP7gTO38=
+      - Jwt__Issuer=CurrencyTracker
+      - Jwt__Audience=CurrencyTrackerUsers
+      - Jwt__ExpirationMinutes=60
+      - Services__UserService=http://userservice:8080/health
+      - Services__FinanceService=http://financeservice:8080/health
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  backend:
+    driver: bridge 

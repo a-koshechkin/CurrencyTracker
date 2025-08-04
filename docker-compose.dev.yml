@@ -1,6 +1,7 @@
 x-common-env: &common-env
   ASPNETCORE_ENVIRONMENT: Development
-  ConnectionStrings__DefaultConnection: Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+  ConnectionStrings__DefaultConnection: Host=postgresql;Port=5432;Database=currencytracker_dev;Username=postgres;Password=admin
+  ASPNETCORE_HTTPS_PORT: ""
 
 x-jwt-env: &jwt-env
   Jwt__SecretKey: cl7F4MnVp24VCH6tkCBCZ9aHJbklPMZnV7jrP7gTO38=
@@ -13,15 +14,15 @@ services:
   postgresql:
     image: postgres:15
     environment:
-      POSTGRES_DB: currencytracker
+      POSTGRES_DB: currencytracker_dev
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_dev:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d currencytracker"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d currencytracker_dev"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -108,7 +109,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  postgres_data:
+  postgres_data_dev:
 
 networks:
   backend:
