@@ -1,4 +1,5 @@
 using FluentMigrator;
+using MigrationService.Tool.Constants;
 
 namespace MigrationService.Tool.Migrations;
 
@@ -7,14 +8,14 @@ public class CreateCurrenciesTable : Migration
 {
     public override void Up()
     {
-        Create.Table("currency")
-            .WithColumn("id").AsInt32().PrimaryKey().Identity()
-            .WithColumn("name").AsString(100).NotNullable()
-            .WithColumn("rate").AsDecimal(18, 6).NotNullable();
+        Create.Table(DatabaseConstants.Tables.Currency)
+            .WithColumn(DatabaseConstants.Columns.Currency.Id).AsInt32().PrimaryKey().Identity()
+            .WithColumn(DatabaseConstants.Columns.Currency.Name).AsString(100).NotNullable()
+            .WithColumn(DatabaseConstants.Columns.Currency.Rate).AsDecimal(18, 6).NotNullable();
     }
 
     public override void Down()
     {
-        Delete.Table("currency");
+        Delete.Table(DatabaseConstants.Tables.Currency);
     }
 }

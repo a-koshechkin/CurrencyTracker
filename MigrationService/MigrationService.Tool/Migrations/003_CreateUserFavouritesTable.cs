@@ -1,4 +1,5 @@
 using FluentMigrator;
+using MigrationService.Tool.Constants;
 
 namespace MigrationService.Tool.Migrations;
 
@@ -7,25 +8,25 @@ public class CreateUserfavoritesTable : Migration
 {
     public override void Up()
     {
-        Create.Table("user_favorites")
-            .WithColumn("user_id").AsInt32().NotNullable()
-            .WithColumn("currency_id").AsInt32().NotNullable();
+        Create.Table(DatabaseConstants.Tables.UserFavorites)
+            .WithColumn(DatabaseConstants.Columns.UserFavorites.UserId).AsInt32().NotNullable()
+            .WithColumn(DatabaseConstants.Columns.UserFavorites.CurrencyId).AsInt32().NotNullable();
 
         Create.PrimaryKey("pk_user_favorites")
-            .OnTable("user_favorites")
-            .Columns("user_id", "currency_id");
+            .OnTable(DatabaseConstants.Tables.UserFavorites)
+            .Columns(DatabaseConstants.Columns.UserFavorites.UserId, DatabaseConstants.Columns.UserFavorites.CurrencyId);
 
         Create.ForeignKey("fk_user_favorites_user")
-            .FromTable("user_favorites").ForeignColumn("user_id")
-            .ToTable("user").PrimaryColumn("id");
+            .FromTable(DatabaseConstants.Tables.UserFavorites).ForeignColumn(DatabaseConstants.Columns.UserFavorites.UserId)
+            .ToTable(DatabaseConstants.Tables.User).PrimaryColumn(DatabaseConstants.Columns.User.Id);
 
         Create.ForeignKey("fk_user_favorites_currency")
-            .FromTable("user_favorites").ForeignColumn("currency_id")
-            .ToTable("currency").PrimaryColumn("id");
+            .FromTable(DatabaseConstants.Tables.UserFavorites).ForeignColumn(DatabaseConstants.Columns.UserFavorites.CurrencyId)
+            .ToTable(DatabaseConstants.Tables.Currency).PrimaryColumn(DatabaseConstants.Columns.Currency.Id);
     }
 
     public override void Down()
     {
-        Delete.Table("user_favorites");
+        Delete.Table(DatabaseConstants.Tables.UserFavorites);
     }
 }

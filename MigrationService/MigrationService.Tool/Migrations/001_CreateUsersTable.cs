@@ -1,4 +1,5 @@
 using FluentMigrator;
+using MigrationService.Tool.Constants;
 
 namespace MigrationService.Tool.Migrations;
 
@@ -7,14 +8,14 @@ public class CreateUsersTable : Migration
 {
     public override void Up()
     {
-        Create.Table("user")
-            .WithColumn("id").AsInt32().PrimaryKey().Identity()
-            .WithColumn("name").AsString(100).NotNullable()
-            .WithColumn("password").AsString(255).NotNullable();
+        Create.Table(DatabaseConstants.Tables.User)
+            .WithColumn(DatabaseConstants.Columns.User.Id).AsInt32().PrimaryKey().Identity()
+            .WithColumn(DatabaseConstants.Columns.User.Name).AsString(100).NotNullable()
+            .WithColumn(DatabaseConstants.Columns.User.Password).AsString(255).NotNullable();
     }
 
     public override void Down()
     {
-        Delete.Table("user");
+        Delete.Table(DatabaseConstants.Tables.User);
     }
 }

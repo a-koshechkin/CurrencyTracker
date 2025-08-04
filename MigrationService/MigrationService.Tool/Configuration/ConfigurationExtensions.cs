@@ -3,7 +3,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MigrationService.Tool.Services;
 using Shared.Infrastructure.Services;
 
 namespace MigrationService.Tool.Configuration;
@@ -12,11 +11,15 @@ public static class ConfigurationExtensions
 {
     public static IServiceCollection AddMigrationServices(this IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        services.Configure<MigrationSettings>(configuration.GetSection(MigrationSettings.SectionName));
+        
+        var migrationSettings = configuration.GetSection(MigrationSettings.SectionName).Get<MigrationSettings>() ?? new MigrationSettings();
+        
+        var connectionString = migrationSettings.Database.BuildConnectionString();
         
         if (string.IsNullOrEmpty(connectionString))
         {
-            throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured");
+            throw new InvalidOperationException("Database connection string is not configured");
         }
         
         services.Configure<PollyConfiguration>(configuration.GetSection("Polly"));

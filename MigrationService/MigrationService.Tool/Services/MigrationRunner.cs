@@ -1,31 +1,21 @@
 ﻿using FluentMigrator.Runner;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Polly;
 using Polly.Retry;
 using Shared.Infrastructure.Services;
 
 namespace MigrationService.Tool.Services;
 
-public class MigrationRunner
+public class MigrationRunner(
+    IMigrationRunner migrationRunner,
+    DatabaseHealthService databaseHealthService,
+    ILogger<MigrationRunner> logger,
+    IOptions<PollyConfiguration> pollyConfig)
 {
-    private readonly IMigrationRunner _migrationRunner;
-    private readonly DatabaseHealthService _databaseHealthService;
-    private readonly ILogger<MigrationRunner> _logger;
-    private readonly AsyncRetryPolicy _migrationRetryPolicy;
-
-    public MigrationRunner(
-        IMigrationRunner migrationRunner,
-        DatabaseHealthService databaseHealthService,
-        ILogger<MigrationRunner> logger,
-        IOptions<PollyConfiguration> pollyConfig)
-    {
-        _migrationRunner = migrationRunner;
-        _databaseHealthService = databaseHealthService;
-        _logger = logger;
-
-        _migrationRetryPolicy = RetryPolicyFactory.CreateMigrationRetryPolicy(pollyConfig, logger);
-    }
+    private readonly IMigrationRunner _migrationRunner = migrationRunner;
+    private readonly DatabaseHealthService _databaseHealthService = databaseHealthService;
+    private readonly ILogger<MigrationRunner> _logger = logger;
+    private readonly AsyncRetryPolicy _migrationRetryPolicy = RetryPolicyFactory.CreateMigrationRetryPolicy(pollyConfig, logger);
 
     public async Task<bool> RunMigrationsAsync(CancellationToken cancellationToken = default)
     {
@@ -47,11 +37,12 @@ public class MigrationRunner
                 return false;
             }
 
-            await _migrationRetryPolicy.ExecuteAsync(async () =>
+            await _migrationRetryPolicy.ExecuteAsync(() =>
             {
                 _logger.LogInformation("Running migrations...");
                 _migrationRunner.MigrateUp();
                 _logger.LogInformation("Migrations completed successfully!");
+                return Task.CompletedTask;
             });
 
             return true;
@@ -76,11 +67,12 @@ public class MigrationRunner
                 return false;
             }
 
-            await _migrationRetryPolicy.ExecuteAsync(async () =>
+            await _migrationRetryPolicy.ExecuteAsync(() =>
             {
                 _logger.LogInformation("Rolling back to version {Version}...", version);
                 _migrationRunner.MigrateDown(version);
                 _logger.LogInformation("Rollback to version {Version} completed successfully!", version);
+                return Task.CompletedTask;
             });
 
             return true;

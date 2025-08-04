@@ -2,7 +2,7 @@ services:
   postgresql:
     image: postgres:15
     environment:
-      POSTGRES_DB: currencytracker
+      POSTGRES_DB: currencytracker_dev
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
     ports:
@@ -10,7 +10,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d currencytracker"]
+      test: ["CMD-SHELL", "pg_isready -U postgres -d currencytracker_dev"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -19,15 +19,19 @@ services:
 
   migrationservice:
     build:
-      context: .
-      dockerfile: MigrationService.Tool/Dockerfile
+      context: ..
+      dockerfile: MigrationService/MigrationService.Tool/Dockerfile
     depends_on:
       postgresql:
         condition: service_healthy
     command: ["--migrate"]
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__DefaultConnection=Host=postgresql;Port=5432;Database=currencytracker;Username=postgres;Password=admin
+      - Migration__Database__Host=postgresql
+      - Migration__Database__Port=5432
+      - Migration__Database__Database=currencytracker_dev
+      - Migration__Database__Username=postgres
+      - Migration__Database__Password=admin
     networks:
       - backend
     restart: "no"
