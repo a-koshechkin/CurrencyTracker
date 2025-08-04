@@ -22,4 +22,4 @@ RUN dotnet publish "CurrencyWorker.Worker.csproj" -c Release -o /app/publish /p:
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "CurrencyWorker.Worker.dll"]
+ENTRYPOINT ["dotnet", "CurrencyWorker.Worker.dll"] 

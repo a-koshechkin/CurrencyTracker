@@ -17,4 +17,4 @@ RUN dotnet publish "./MigrationService.Tool.csproj" -c $BUILD_CONFIGURATION -o /
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "MigrationService.Tool.dll"]
+ENTRYPOINT ["dotnet", "MigrationService.Tool.dll"] 

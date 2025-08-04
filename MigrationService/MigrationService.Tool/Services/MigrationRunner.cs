@@ -24,17 +24,17 @@ public class MigrationRunner(
         {
             _logger.LogInformation("Starting migration process...");
 
-            var isDatabaseReady = await _databaseHealthService.WaitForDatabaseAsync(cancellationToken);
-            if (!isDatabaseReady)
-            {
-                _logger.LogError("Database is not ready after all retry attempts");
-                return false;
-            }
-
             var databaseCreated = await _databaseHealthService.CreateDatabaseIfNotExistsAsync(cancellationToken);
             if (!databaseCreated)
             {
                 _logger.LogError("Failed to create database");
+                return false;
+            }
+
+            var isDatabaseReady = await _databaseHealthService.WaitForDatabaseAsync(cancellationToken);
+            if (!isDatabaseReady)
+            {
+                _logger.LogError("Database is not ready after all retry attempts");
                 return false;
             }
 

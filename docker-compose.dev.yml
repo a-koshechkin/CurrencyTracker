@@ -32,7 +32,7 @@ services:
   migrationservice:
     build:
       context: .
-      dockerfile: MigrationService/MigrationService.Tool/Dockerfile
+      dockerfile: MigrationService/Dockerfile
     depends_on:
       postgresql:
         condition: service_healthy
@@ -62,7 +62,7 @@ services:
   financeservice:
     build:
       context: .
-      dockerfile: FinanceService/FinanceService.API/Dockerfile
+      dockerfile: FinanceService/Dockerfile
     depends_on:
       postgresql:
         condition: service_healthy
@@ -78,7 +78,7 @@ services:
   currencyworker:
     build:
       context: .
-      dockerfile: CurrencyWorker/CurrencyWorker.Worker/Dockerfile
+      dockerfile: CurrencyWorker/Dockerfile
     depends_on:
       postgresql:
         condition: service_healthy
@@ -94,7 +94,7 @@ services:
   apigateway:
     build:
       context: .
-      dockerfile: APIGateway/APIGateway/Dockerfile
+      dockerfile: APIGateway/Dockerfile
     depends_on:
       - userservice
       - financeservice
