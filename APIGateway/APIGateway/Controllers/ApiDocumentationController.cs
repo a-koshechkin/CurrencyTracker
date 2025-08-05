@@ -90,7 +90,6 @@ public class ApiDocumentationController(IOptions<AppSettings> appSettings) : Con
                 Message = "User registered successfully",
                 Data = new
                 {
-                    UserId = 1,
                     Name = "john_doe",
                     AccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
                     TokenType = ApiConstants.Authentication.TokenType,

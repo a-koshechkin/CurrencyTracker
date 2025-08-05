@@ -53,7 +53,6 @@ public class UserService(
 
             return CreateSuccessResponse("User registered successfully", new UserLoginResponse
             {
-                UserId = createdUser.Id,
                 Name = createdUser.Name,
                 AccessToken = accessToken,
                 TokenType = "Bearer",
@@ -86,7 +85,6 @@ public class UserService(
 
             return CreateSuccessResponse("Login successful", new UserLoginResponse
             {
-                UserId = user.Id,
                 Name = user.Name,
                 AccessToken = accessToken,
                 TokenType = "Bearer",

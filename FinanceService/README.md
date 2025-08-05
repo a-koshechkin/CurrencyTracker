@@ -39,4 +39,14 @@ docker-compose -f docker-compose.dev.yml up -d
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-**Note**: This service is not exposed directly. Access via API Gateway at `/api/v1/currencies/*` and `/api/v1/favorites/*` 
+## Direct Access (Development Only)
+
+In development environment, the service is exposed directly for testing and debugging:
+
+- **Direct Access**: `http://localhost:8082`
+- **Health Check**: `http://localhost:8082/health`
+- **Swagger UI**: `http://localhost:8082/swagger`
+
+## Production Access
+
+**Note**: In production, this service is not exposed directly. Access via API Gateway at `/api/v1/currencies/*` and `/api/v1/favorites/*` 

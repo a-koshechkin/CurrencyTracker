@@ -35,8 +35,18 @@ docker-compose -f docker-compose.prod.yml up -d
 
 ## Services
 
-- **API Gateway**: `http://localhost:5000` (dev) / `http://localhost:8080` (prod)
-- **API Documentation**: `http://localhost:5000/api/v1/docs` (dev) / `http://localhost:8080/api/v1/docs` (prod)
+### Development Environment
+- **API Gateway**: `http://localhost:5000`
+- **UserService**: `http://localhost:8081` (direct access)
+- **FinanceService**: `http://localhost:8082` (direct access)
+- **PostgreSQL**: `localhost:5432` (direct access for development)
+- **API Documentation**: `http://localhost:5000/api/v1/docs`
+
+### Production Environment
+- **API Gateway**: `http://localhost:8080`
+- **API Documentation**: `http://localhost:8080/api/v1/docs`
+
+**Note**: In development, individual services and database are exposed for direct testing and debugging. In production, only the API Gateway is exposed for security.
 
 ## Tech Stack
 

@@ -64,7 +64,6 @@ public class UserControllerTests
             Message = "User registered successfully",
             Data = new UserLoginResponse
             {
-                UserId = 1,
                 Name = "testuser",
                 AccessToken = "valid-token",
                 TokenType = "Bearer",
@@ -84,7 +83,6 @@ public class UserControllerTests
         Assert.True(response.Success);
         Assert.Equal("User registered successfully", response.Message);
         Assert.NotNull(response.Data);
-        Assert.Equal(1, response.Data.UserId);
         Assert.Equal("testuser", response.Data.Name);
     }
 
@@ -137,7 +135,6 @@ public class UserControllerTests
             Message = "Login successful",
             Data = new UserLoginResponse
             {
-                UserId = 1,
                 Name = "testuser",
                 AccessToken = "valid-token",
                 TokenType = "Bearer",
@@ -157,7 +154,6 @@ public class UserControllerTests
         Assert.True(response.Success);
         Assert.Equal("User logged in successfully", response.Message);
         Assert.NotNull(response.Data);
-        Assert.Equal(1, response.Data.UserId);
         Assert.Equal("testuser", response.Data.Name);
     }
 

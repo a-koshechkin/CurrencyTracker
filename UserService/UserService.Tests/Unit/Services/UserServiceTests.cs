@@ -53,7 +53,6 @@ public class UserServiceTests
         Assert.True(result.Success);
         Assert.Equal("User registered successfully", result.Message);
         Assert.NotNull(result.Data);
-        Assert.Equal(createdUser.Id, result.Data.UserId);
         Assert.Equal(expectedToken, result.Data.AccessToken);
     }
 
@@ -177,7 +176,6 @@ public class UserServiceTests
         Assert.True(result.Success);
         Assert.Equal("Login successful", result.Message);
         Assert.NotNull(result.Data);
-        Assert.Equal(existingUser.Id, result.Data.UserId);
         Assert.Equal(expectedToken, result.Data.AccessToken);
     }
 

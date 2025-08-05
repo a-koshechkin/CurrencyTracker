@@ -14,7 +14,6 @@ public record UserLoginRequest
 
 public record UserLoginResponse
 {
-    public int UserId { get; init; }
     public string Name { get; init; } = string.Empty;
     public string AccessToken { get; init; } = string.Empty;
     public string TokenType { get; init; } = "Bearer";
