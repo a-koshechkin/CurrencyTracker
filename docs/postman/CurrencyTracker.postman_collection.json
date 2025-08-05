@@ -1,0 +1,339 @@
+{
+	"info": {
+		"_postman_id": "2e23d80c-87ff-48bb-a47d-1942346723b8",
+		"name": "CurrencyTracker",
+		"description": "API collection for CurrencyTracker application. This collection includes authentication, currency management, and user favorites functionality.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21313422"
+	},
+	"item": [
+		{
+			"name": "External APIs",
+			"item": [
+				{
+					"name": "Russian Central Bank - Daily Rates",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/xml",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://www.cbr.ru/scripts/XML_daily.asp",
+							"protocol": "https",
+							"host": [
+								"www",
+								"cbr",
+								"ru"
+							],
+							"path": [
+								"scripts",
+								"XML_daily.asp"
+							]
+						}
+					},
+					"response": [],
+					"description": "External API endpoint for Russian Central Bank daily currency rates in XML format"
+				}
+			],
+			"description": "External API endpoints used by the application"
+		},
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.data && response.data.accessToken) {",
+									"        pm.environment.set('token', response.data.accessToken);",
+									"        console.log('Token saved to environment');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{existing_name}}\",\r\n    \"password\": \"{{existing_password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api}}auth/login",
+							"host": [
+								"{{base_api}}auth"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": [],
+					"description": "Authenticate user and receive JWT token. The token will be automatically saved to environment variables."
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{new_name}}\",\r\n    \"password\": \"{{new_password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api}}auth/register",
+							"host": [
+								"{{base_api}}auth"
+							],
+							"path": [
+								"register"
+							]
+						}
+					},
+					"response": [],
+					"description": "Register a new user account"
+				}
+			],
+			"description": "Authentication endpoints for user login and registration"
+		},
+		{
+			"name": "Currency Management",
+			"item": [
+				{
+					"name": "Get All Currencies",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_api}}currencies",
+							"host": [
+								"{{base_api}}currencies"
+							]
+						}
+					},
+					"response": [],
+					"description": "Retrieve all available currencies with their current rates"
+				}
+			],
+			"description": "Currency-related endpoints for fetching currency data"
+		},
+		{
+			"name": "User Favorites",
+			"item": [
+				{
+					"name": "Get User Favorites",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_api}}favorites",
+							"host": [
+								"{{base_api}}favorites"
+							]
+						}
+					},
+					"response": [],
+					"description": "Get the current user's favorite currencies"
+				},
+				{
+					"name": "Add Favorite Currency",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"currencyCode\": \"{{currencyCode}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api}}favorites",
+							"host": [
+								"{{base_api}}favorites"
+							]
+						}
+					},
+					"response": [],
+					"description": "Add a currency to user's favorites list"
+				},
+				{
+					"name": "Remove Favorite Currency",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_api}}favorites/{{currencyCode}}",
+							"host": [
+								"{{base_api}}favorites"
+							],
+							"path": [
+								"{{currencyCode}}"
+							]
+						}
+					},
+					"response": [],
+					"description": "Remove a currency from user's favorites list"
+				}
+			],
+			"description": "User favorites management endpoints"
+		},
+		{
+			"name": "System",
+			"item": [
+				{
+					"name": "API Documentation",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api}}docs",
+							"host": [
+								"{{base_api}}docs"
+							]
+						}
+					},
+					"response": [],
+					"description": "Access the API documentation (Swagger/OpenAPI)"
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/health",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"health"
+							]
+						}
+					},
+					"response": [],
+					"description": "Check the health status of the API"
+				}
+			],
+			"description": "System endpoints for documentation and health monitoring"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "base_api",
+			"value": "{{base_url}}/api/v1/",
+			"type": "string"
+		},
+		{
+			"key": "currencyCode",
+			"value": "CAD",
+			"type": "string"
+		},
+		{
+			"key": "existing_name",
+			"value": "john_doe",
+			"type": "string"
+		},
+		{
+			"key": "existing_password",
+			"value": "password123",
+			"type": "string"
+		},
+		{
+			"key": "new_name",
+			"value": "john_doe1",
+			"type": "string"
+		},
+		{
+			"key": "new_password",
+			"value": "password123",
+			"type": "string"
+		}
+	]
+}

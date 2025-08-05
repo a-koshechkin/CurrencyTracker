@@ -41,10 +41,12 @@ docker-compose -f docker-compose.prod.yml up -d
 - **FinanceService**: `http://localhost:8082` (direct access)
 - **PostgreSQL**: `localhost:5432` (direct access for development)
 - **API Documentation**: `http://localhost:5000/api/v1/docs`
+- **Health Check**: `http://localhost:5000/api/health`
 
 ### Production Environment
 - **API Gateway**: `http://localhost:8080`
 - **API Documentation**: `http://localhost:8080/api/v1/docs`
+- **Health Check**: `http://localhost:8080/api/health`
 
 **Note**: In development, individual services and database are exposed for direct testing and debugging. In production, only the API Gateway is exposed for security.
 
@@ -54,4 +56,12 @@ docker-compose -f docker-compose.prod.yml up -d
 - PostgreSQL
 - Docker
 - JWT Authentication
-- YARP Reverse Proxy 
+- YARP Reverse Proxy
+
+## API Testing
+
+For API testing and documentation, see the [Postman Collection](./docs/postman/README.md) which includes:
+- Complete API endpoint collection
+- Environment configurations for development and production
+- Automatic JWT token management
+- Comprehensive testing workflows 
